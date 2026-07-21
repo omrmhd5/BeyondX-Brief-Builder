@@ -12,7 +12,7 @@
 
 Test **instructions** and a **summary** belong in **README** (assessment requirement). Per-test details and **full terminal output** are in **`TEST_RESULTS.md`**.
 
-Source: `Candidate_Assessment Full-Stack AI Developer - Web Developer.pdf` (BEYOND X hiring assessment, Mid–Senior Full-Stack AI Developer / Web Developer).
+Source: Beyond X hiring assessment (Mid–Senior Full-Stack AI Developer / Web Developer). Requirements are captured in this document; the confidential assessment PDF is **not** included in the public repository.
 
 **Status**: MVP complete. Post-MVP enhancements (view/delete submissions, custom form fields, confirm modals) implemented. See [§7 Built features](#7-built-features-as-implemented).
 
@@ -47,7 +47,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
 - Standalone — no external candidate collaboration.
 - State assumptions explicitly.
 - AI use disclosed in `docs/AI_LOG.md`.
-- Submission = repo/ZIP + README + tests + demo/screenshots + AI log. No hardcoded keys.
+- Submission = repo/ZIP + README + tests + demo/screenshots + AI log. No hardcoded keys. Assessment PDF kept out of public repo (requirements in `PROJECT_SPEC.md`).
 
 ---
 
@@ -96,6 +96,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
   - `GeminiProvider` — `GEMINI_API_KEY` from env; model `gemini-3.1-flash-lite` (override via `GEMINI_MODEL`).
   - Per-request UI toggle; safe fallback to mock.
 - **Testing**: Vitest (backend + frontend).
+- **Env templates**: `backend/.env.example`, `frontend/.env.example` (committed; copy to `.env` locally).
 - **Docs**: `docs/PROJECT_SPEC.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/AI_LOG.md`, `docs/TEST_RESULTS.md`, root `README.md`.
 
 ### 3.1 Frontend Architecture

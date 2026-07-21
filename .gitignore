@@ -8,3 +8,6 @@ data/
 .DS_Store
 coverage/
 *.log
+
+# Confidential assessment material — keep local only, never commit
+**/Candidate_Assessment*.pdf

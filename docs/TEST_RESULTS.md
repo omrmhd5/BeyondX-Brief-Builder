@@ -72,13 +72,14 @@ React hook state machine for form submit (mocked API layer).
  RUN  v3.2.7
 
  ✓ src/services/ai/mockProvider.service.test.ts (3 tests)
- ✓ src/services/briefGeneration.service.test.ts (1 test)
  ✓ src/services/briefValidation.service.test.ts (5 tests)
+ ✓ src/services/briefGeneration.service.test.ts (1 test)
  ✓ src/routes/briefs.routes.test.ts (6 tests)
 
  Test Files  4 passed (4)
       Tests  15 passed (15)
-   Duration  ~6s
+   Start at  01:34:52
+   Duration  1.36s
 ```
 
 ---
@@ -92,7 +93,8 @@ React hook state machine for form submit (mocked API layer).
 
  Test Files  1 passed (1)
       Tests  1 passed (1)
-   Duration  ~15s
+   Start at  01:34:53
+   Duration  1.96s
 ```
 
 ---
@@ -105,4 +107,4 @@ React hook state machine for form submit (mocked API layer).
 | frontend  | 1          | 1      | Submit hook error handling                          |
 | **Total** | **5**      | **16** |                                                     |
 
-**Last verified:** 2026-07-22
+**Last verified:** 2026-07-22 (01:34 UTC+3)

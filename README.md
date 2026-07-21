@@ -2,13 +2,12 @@
 
 ## Project Docs
 
-| Document                                                                                                                | Purpose                                         |
-| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md)                                                                          | Requirements, architecture, assumptions, status |
-| [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md)                                                            | Phased build steps + completion checklist       |
-| [`docs/AI_LOG.md`](docs/AI_LOG.md)                                                                                      | AI coding log (assessment requirement)          |
-| [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)                                                                          | Test coverage details + full run output         |
-| [`docs/Candidate_Assessment … .pdf`](docs/Candidate_Assessment%20Full-Stack%20AI%20Developer%20-%20Web%20Developer.pdf) | Original brief                                  |
+| Document                                                     | Purpose                                         |
+| ------------------------------------------------------------ | ----------------------------------------------- |
+| [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md)               | Requirements, architecture, assumptions, status |
+| [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) | Phased build steps + completion checklist       |
+| [`docs/AI_LOG.md`](docs/AI_LOG.md)                           | AI coding log (assessment requirement)          |
+| [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)               | Test coverage details + full run output         |
 
 A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Developer** hiring assessment. Clients enter project details and receive a structured brief summary plus 4–6 discovery questions, powered by a deterministic mock AI provider with optional Google Gemini integration.
 
@@ -32,7 +31,21 @@ This project implements the assessment brief:
 
 ### Environment variables
 
-**Backend** — create `backend/.env`:
+Copy the example files and edit as needed:
+
+```bash
+cp backend/.env.example backend/.env
+cp frontend/.env.example frontend/.env
+```
+
+On Windows (PowerShell):
+
+```powershell
+Copy-Item backend\.env.example backend\.env
+Copy-Item frontend\.env.example frontend\.env
+```
+
+**Backend** (`backend/.env`):
 
 ```env
 PORT=5000
@@ -41,11 +54,13 @@ GEMINI_API_KEY=                    # optional — leave empty for mock-only
 GEMINI_MODEL=gemini-3.1-flash-lite # optional — default shown
 ```
 
-**Frontend** — create `frontend/.env`:
+**Frontend** (`frontend/.env`):
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
 ```
+
+See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example) for committed templates (no secrets).
 
 ### Install & run
 
@@ -119,15 +134,15 @@ Response shape: `{ success: true, data }` or `{ success: false, error: { message
 
 ## Security & Privacy
 
-| Check                                                   | Status          |
-| ------------------------------------------------------- | --------------- |
-| `.env` gitignored, no secrets in repo                   | Verified        |
-| `GEMINI_API_KEY` from env only                          | Yes             |
-| CORS restricted to `FRONTEND_ORIGIN`                    | Yes             |
-| Rate limiting on `POST /api/briefs`                     | 30 req / 15 min |
-| Request body size limit                                 | 20 KB           |
-| React escapes user input (no `dangerouslySetInnerHTML`) | Yes             |
-| Server-side Zod validation                              | Yes             |
+| Check                                                       | Status          |
+| ----------------------------------------------------------- | --------------- |
+| `.env` gitignored; `.env.example` committed with no secrets | Verified        |
+| `GEMINI_API_KEY` from env only                              | Yes             |
+| CORS restricted to `FRONTEND_ORIGIN`                        | Yes             |
+| Rate limiting on `POST /api/briefs`                         | 30 req / 15 min |
+| Request body size limit                                     | 20 KB           |
+| React escapes user input (no `dangerouslySetInnerHTML`)     | Yes             |
+| Server-side Zod validation                                  | Yes             |
 
 ## Performance
 

@@ -6,11 +6,11 @@ Per Beyond X assessment rules: AI use is required and must be disclosed.
 
 I confirm this is my work, I used no confidential material, and this AI-use log is complete.
 
-| Field          | Value       |
-| -------------- | ----------- |
-| **Candidate**  | _(fill in)_ |
-| **Date**       | _(fill in)_ |
-| **Time spent** | _(fill in)_ |
+| Field          | Value            |
+| -------------- | ---------------- |
+| **Candidate**  | _(Omar Mahmoud)_ |
+| **Date**       | _(22/7/2026)_    |
+| **Time spent** | _(3 Hours)_      |
 
 ---
 
