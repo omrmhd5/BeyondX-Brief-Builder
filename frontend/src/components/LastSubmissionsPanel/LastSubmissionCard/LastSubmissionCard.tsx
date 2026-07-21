@@ -1,4 +1,5 @@
 import type { StoredSubmission } from "../../../types/brief";
+import { BADGE, DANGER_BTN, GHOST_BTN } from "../../../lib/uiClasses";
 
 interface LastSubmissionCardProps {
   submission: StoredSubmission;
@@ -16,39 +17,41 @@ export default function LastSubmissionCard({
   const date = new Date(submission.createdAt).toLocaleString();
 
   return (
-    <article className="rounded-lg border border-slate-200 bg-slate-50 p-4">
+    <article className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h3 className="font-semibold text-slate-900">
+        <h3 className="font-semibold text-zinc-100">
           {submission.companyName}
         </h3>
-        <span className="text-xs text-slate-500">{date}</span>
+        <span className="text-[10px] uppercase tracking-wider text-zinc-600">
+          {date}
+        </span>
       </div>
-      <p className="mt-1 text-sm text-slate-600 line-clamp-2">
+      <p className="mt-2 line-clamp-2 text-sm text-zinc-400">
         {submission.summary.headline}
       </p>
-      <div className="mt-2 flex flex-wrap items-center gap-2">
-        <span className="rounded bg-white px-2 py-0.5 text-xs text-slate-600 ring-1 ring-slate-200">
+      <div className="mt-3 flex flex-wrap items-center gap-2">
+        <span className={BADGE}>
           {submission.aiModeUsed === "real" ? "Real AI" : "Mock"}
         </span>
         {submission.fallbackApplied && (
-          <span className="rounded bg-amber-50 px-2 py-0.5 text-xs text-amber-700 ring-1 ring-amber-200">
+          <span className="inline-flex rounded-full border border-amber-400/20 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-wider text-amber-300">
             Fallback
           </span>
         )}
       </div>
-      <div className="mt-3 flex gap-2">
+      <div className="mt-4 flex gap-2">
         <button
           type="button"
           onClick={() => onView(submission)}
           disabled={deleting}
-          className="rounded-md bg-white px-3 py-1.5 text-xs font-medium text-indigo-700 ring-1 ring-indigo-200 hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
+          className={GHOST_BTN}>
           View
         </button>
         <button
           type="button"
           onClick={() => onDelete(submission.id)}
           disabled={deleting}
-          className="rounded-md bg-white px-3 py-1.5 text-xs font-medium text-red-700 ring-1 ring-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50">
+          className={DANGER_BTN}>
           {deleting ? "Deleting…" : "Delete"}
         </button>
       </div>

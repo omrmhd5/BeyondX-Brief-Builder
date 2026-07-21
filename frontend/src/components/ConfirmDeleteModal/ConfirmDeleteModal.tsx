@@ -1,3 +1,10 @@
+import {
+  BEZEL_INNER,
+  BEZEL_OUTER,
+  GHOST_BTN,
+  MOTION,
+} from "../../lib/uiClasses";
+
 interface ConfirmDeleteModalProps {
   isOpen: boolean;
   title: string;
@@ -21,38 +28,42 @@ export default function ConfirmDeleteModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-3xl"
       role="alertdialog"
       aria-modal="true"
       aria-labelledby="confirm-delete-title"
       aria-describedby="confirm-delete-message"
       onClick={onCancel}>
       <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className={`w-full max-w-md ${BEZEL_OUTER} ${MOTION}`}
         onClick={(e) => e.stopPropagation()}>
-        <h2
-          id="confirm-delete-title"
-          className="text-lg font-semibold text-slate-900">
-          {title}
-        </h2>
-        <p id="confirm-delete-message" className="mt-2 text-sm text-slate-600">
-          {message}
-        </p>
-        <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
-          <button
-            type="button"
-            onClick={onCancel}
-            disabled={loading}
-            className="rounded-lg px-4 py-2 text-sm font-medium text-slate-700 ring-1 ring-slate-300 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-50">
-            Cancel
-          </button>
-          <button
-            type="button"
-            onClick={onConfirm}
-            disabled={loading}
-            className="rounded-lg bg-red-600 px-4 py-2 text-sm font-semibold text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 disabled:opacity-50">
-            {loading ? "Deleting…" : confirmLabel}
-          </button>
+        <div className={`${BEZEL_INNER} p-6 sm:p-8`}>
+          <h2
+            id="confirm-delete-title"
+            className="text-lg font-semibold tracking-tight text-white">
+            {title}
+          </h2>
+          <p
+            id="confirm-delete-message"
+            className="mt-3 text-sm leading-relaxed text-zinc-400">
+            {message}
+          </p>
+          <div className="mt-8 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+            <button
+              type="button"
+              onClick={onCancel}
+              disabled={loading}
+              className={GHOST_BTN}>
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={onConfirm}
+              disabled={loading}
+              className={`rounded-full border border-red-400/30 bg-red-500/20 px-6 py-3 text-sm font-semibold text-red-200 ${MOTION} cursor-pointer hover:bg-red-500/30 focus:outline-none focus:ring-2 focus:ring-red-400/30 disabled:cursor-not-allowed disabled:opacity-40`}>
+              {loading ? "Deleting…" : confirmLabel}
+            </button>
+          </div>
         </div>
       </div>
     </div>

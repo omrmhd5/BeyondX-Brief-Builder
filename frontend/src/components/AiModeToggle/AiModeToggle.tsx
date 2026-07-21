@@ -1,4 +1,5 @@
-import type { AiMode } from "../types/brief";
+import type { AiMode } from "../../types/brief";
+import { MOTION } from "../../lib/uiClasses";
 
 interface AiModeToggleProps {
   value: AiMode;
@@ -12,37 +13,52 @@ export default function AiModeToggle({
   disabled = false,
 }: AiModeToggleProps) {
   return (
-    <fieldset className="rounded-lg border border-slate-200 bg-white p-4">
-      <legend className="px-1 text-sm font-medium text-slate-700">
+    <fieldset className="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
+      <legend className="px-1 text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-400">
         AI Mode
       </legend>
-      <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:gap-6">
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="radio"
-            name="aiMode"
-            value="mock"
-            checked={value === "mock"}
-            onChange={() => onChange("mock")}
-            disabled={disabled}
-            className="h-4 w-4 text-indigo-600 focus:ring-2 focus:ring-indigo-500"
-          />
-          <span className="text-sm text-slate-700">
-            Mock (deterministic, no API key)
-          </span>
-        </label>
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="radio"
-            name="aiMode"
-            value="real"
-            checked={value === "real"}
-            onChange={() => onChange("real")}
-            disabled={disabled}
-            className="h-4 w-4 text-indigo-600 focus:ring-2 focus:ring-indigo-500"
-          />
-          <span className="text-sm text-slate-700">Real AI (Gemini)</span>
-        </label>
+      <div className="mt-3 flex flex-col gap-2 sm:flex-row sm:gap-3">
+        {(
+          [
+            {
+              mode: "mock" as const,
+              label: "Mock",
+              hint: "Deterministic, no API key",
+            },
+            {
+              mode: "real" as const,
+              label: "Real AI",
+              hint: "Gemini with safe fallback",
+            },
+          ] as const
+        ).map(({ mode, label, hint }) => {
+          const active = value === mode;
+          return (
+            <label
+              key={mode}
+              className={`flex flex-1 cursor-pointer items-start gap-3 rounded-2xl border px-4 py-3 ${MOTION} ${
+                active
+                  ? "border-violet-400/30 bg-violet-500/10"
+                  : "border-white/10 bg-transparent hover:bg-white/[0.03]"
+              }`}>
+              <input
+                type="radio"
+                name="aiMode"
+                value={mode}
+                checked={active}
+                onChange={() => onChange(mode)}
+                disabled={disabled}
+                className="mt-0.5 h-4 w-4 border-white/20 bg-transparent text-violet-400 focus:ring-violet-400/30"
+              />
+              <span>
+                <span className="block text-sm font-medium text-zinc-200">
+                  {label}
+                </span>
+                <span className="block text-xs text-zinc-500">{hint}</span>
+              </span>
+            </label>
+          );
+        })}
       </div>
     </fieldset>
   );

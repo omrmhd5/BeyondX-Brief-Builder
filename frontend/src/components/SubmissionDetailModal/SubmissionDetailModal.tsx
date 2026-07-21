@@ -1,6 +1,12 @@
 import BriefSummaryResult from "../BriefSummaryResult/BriefSummaryResult";
 import DiscoveryQuestionsList from "../DiscoveryQuestionsList/DiscoveryQuestionsList";
-import type { StoredSubmission } from "../../../types/brief";
+import type { StoredSubmission } from "../../types/brief";
+import {
+  BEZEL_INNER,
+  BEZEL_OUTER,
+  GHOST_BTN,
+  MOTION,
+} from "../../lib/uiClasses";
 
 interface SubmissionDetailModalProps {
   submission: StoredSubmission;
@@ -15,72 +21,77 @@ export default function SubmissionDetailModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
+      className="fixed inset-0 z-40 flex items-center justify-center bg-black/70 p-4 backdrop-blur-3xl"
       role="dialog"
       aria-modal="true"
       aria-labelledby="submission-detail-title"
       onClick={onClose}>
       <div
-        className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-xl"
+        className={`scrollbar-premium max-h-[90vh] w-full max-w-2xl overflow-y-auto ${BEZEL_OUTER} ${MOTION}`}
         onClick={(e) => e.stopPropagation()}>
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h2
-              id="submission-detail-title"
-              className="text-xl font-bold text-slate-900">
-              {submission.companyName}
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">{date}</p>
+        <div className={`${BEZEL_INNER} p-6 sm:p-8`}>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2
+                id="submission-detail-title"
+                className="text-2xl font-bold tracking-tight text-white">
+                {submission.companyName}
+              </h2>
+              <p className="mt-1 text-sm text-zinc-500">{date}</p>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className={GHOST_BTN}
+              aria-label="Close">
+              Close
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="rounded-lg px-3 py-1.5 text-sm font-medium text-slate-600 hover:bg-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
-            aria-label="Close">
-            Close
-          </button>
-        </div>
 
-        <dl className="mt-4 grid gap-2 text-sm sm:grid-cols-2">
-          <div>
-            <dt className="font-medium text-slate-500">Sector</dt>
-            <dd className="text-slate-800">{submission.sector}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-slate-500">Budget</dt>
-            <dd className="text-slate-800">{submission.budgetRange}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-slate-500">Deadline</dt>
-            <dd className="text-slate-800">{submission.deadline}</dd>
-          </div>
-          <div>
-            <dt className="font-medium text-slate-500">Services</dt>
-            <dd className="text-slate-800">
-              {submission.neededServices.join(", ")}
-            </dd>
-          </div>
-          <div className="sm:col-span-2">
-            <dt className="font-medium text-slate-500">Objective</dt>
-            <dd className="text-slate-800">{submission.objective}</dd>
-          </div>
-          <div className="sm:col-span-2">
-            <dt className="font-medium text-slate-500">Audience</dt>
-            <dd className="text-slate-800">{submission.audience}</dd>
-          </div>
-        </dl>
+          <dl className="mt-6 grid gap-4 text-sm sm:grid-cols-2">
+            {(
+              [
+                ["Sector", submission.sector],
+                ["Budget", submission.budgetRange],
+                ["Deadline", submission.deadline],
+                ["Services", submission.neededServices.join(", ")],
+              ] as const
+            ).map(([label, value]) => (
+              <div key={label}>
+                <dt className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+                  {label}
+                </dt>
+                <dd className="mt-1 text-zinc-200">{value}</dd>
+              </div>
+            ))}
+            <div className="sm:col-span-2">
+              <dt className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+                Objective
+              </dt>
+              <dd className="mt-1 text-zinc-200">{submission.objective}</dd>
+            </div>
+            <div className="sm:col-span-2">
+              <dt className="text-[11px] font-medium uppercase tracking-[0.14em] text-zinc-500">
+                Audience
+              </dt>
+              <dd className="mt-1 text-zinc-200">{submission.audience}</dd>
+            </div>
+          </dl>
 
-        <div className="mt-6 space-y-6">
-          <BriefSummaryResult
-            result={{
-              summary: submission.summary,
-              aiModeUsed: submission.aiModeUsed,
-              fallbackApplied: submission.fallbackApplied,
-            }}
-          />
-          <DiscoveryQuestionsList
-            questions={submission.summary.discoveryQuestions}
-          />
+          <div className="mt-8 space-y-6">
+            <BriefSummaryResult
+              embedded
+              result={{
+                summary: submission.summary,
+                aiModeUsed: submission.aiModeUsed,
+                fallbackApplied: submission.fallbackApplied,
+              }}
+            />
+            <DiscoveryQuestionsList
+              embedded
+              questions={submission.summary.discoveryQuestions}
+            />
+          </div>
         </div>
       </div>
     </div>

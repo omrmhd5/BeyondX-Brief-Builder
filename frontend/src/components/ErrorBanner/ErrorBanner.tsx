@@ -1,3 +1,5 @@
+import BezelCard from "../ui/BezelCard";
+
 interface ErrorBannerProps {
   message?: string;
   fieldErrors?: Record<string, string>;
@@ -12,20 +14,21 @@ export default function ErrorBanner({
   }
 
   return (
-    <div
-      className="rounded-lg border border-red-200 bg-red-50 p-4"
-      role="alert"
-      aria-live="assertive">
-      {message && <p className="text-sm font-medium text-red-800">{message}</p>}
-      {fieldErrors && Object.keys(fieldErrors).length > 0 && (
-        <ul className="mt-2 list-inside list-disc text-sm text-red-700">
-          {Object.entries(fieldErrors).map(([field, err]) => (
-            <li key={field}>
-              <span className="font-medium">{field}:</span> {err}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
+    <BezelCard reveal={false} innerClassName="border border-red-400/20 p-5">
+      <div role="alert" aria-live="assertive">
+        {message && (
+          <p className="text-sm font-medium text-red-300">{message}</p>
+        )}
+        {fieldErrors && Object.keys(fieldErrors).length > 0 && (
+          <ul className="mt-3 space-y-1 text-sm text-red-300/90">
+            {Object.entries(fieldErrors).map(([field, err]) => (
+              <li key={field}>
+                <span className="font-medium text-red-200">{field}:</span> {err}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </BezelCard>
   );
 }

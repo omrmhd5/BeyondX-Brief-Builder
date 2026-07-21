@@ -6,9 +6,11 @@ import {
   isApiError,
 } from "../../api/briefsApi";
 import { track } from "../../lib/analytics";
+import { DANGER_BTN } from "../../lib/uiClasses";
 import type { StoredSubmission } from "../../types/brief";
 import ConfirmDeleteModal from "../ConfirmDeleteModal/ConfirmDeleteModal";
 import SubmissionDetailModal from "../SubmissionDetailModal/SubmissionDetailModal";
+import BezelCard from "../ui/BezelCard";
 import LastSubmissionCard from "./LastSubmissionCard/LastSubmissionCard";
 
 interface LastSubmissionsPanelProps {
@@ -106,64 +108,64 @@ export default function LastSubmissionsPanel({
 
   return (
     <>
-      <section
-        className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm"
-        aria-labelledby="recent-submissions-heading">
-        <div className="flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2
-              id="recent-submissions-heading"
-              className="text-lg font-semibold text-slate-900">
-              Past Submissions
-            </h2>
-            <p className="mt-1 text-sm text-slate-500">
-              Last 5 briefs (newest first)
-            </p>
+      <BezelCard revealDelay={200} innerClassName="p-6">
+        <section aria-labelledby="recent-submissions-heading">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2
+                id="recent-submissions-heading"
+                className="text-lg font-semibold tracking-tight text-white">
+                Past Submissions
+              </h2>
+              <p className="mt-1 text-sm text-zinc-500">
+                Last 5 briefs (newest first)
+              </p>
+            </div>
+            {submissions.length > 0 && (
+              <button
+                type="button"
+                onClick={() => setConfirm({ type: "all" })}
+                disabled={isBusy || loading}
+                className={DANGER_BTN}>
+                Delete all
+              </button>
+            )}
           </div>
-          {submissions.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setConfirm({ type: "all" })}
-              disabled={isBusy || loading}
-              className="rounded-md px-3 py-1.5 text-xs font-medium text-red-700 ring-1 ring-red-200 hover:bg-red-50 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50">
-              Delete all
-            </button>
-          )}
-        </div>
 
-        {loading && (
-          <p className="mt-4 text-sm text-slate-500" aria-live="polite">
-            Loading…
-          </p>
-        )}
-        {error && (
-          <p className="mt-4 text-sm text-red-600" role="alert">
-            {error}
-          </p>
-        )}
-        {!loading && !error && submissions.length === 0 && (
-          <p className="mt-4 text-sm text-slate-500">
-            No submissions yet. Submit a brief to see it here.
-          </p>
-        )}
-        <div className="mt-4 space-y-3">
-          {submissions.map((s) => (
-            <LastSubmissionCard
-              key={s.id}
-              submission={s}
-              onView={setViewing}
-              onDelete={(id) =>
-                setConfirm({
-                  type: "one",
-                  id,
-                  companyName: s.companyName,
-                })
-              }
-              deleting={deletingId === s.id || deletingAll}
-            />
-          ))}
-        </div>
-      </section>
+          {loading && (
+            <p className="mt-6 text-sm text-zinc-500" aria-live="polite">
+              Loading…
+            </p>
+          )}
+          {error && (
+            <p className="mt-6 text-sm text-red-400" role="alert">
+              {error}
+            </p>
+          )}
+          {!loading && !error && submissions.length === 0 && (
+            <p className="mt-6 text-sm text-zinc-500">
+              No submissions yet. Submit a brief to see it here.
+            </p>
+          )}
+          <div className="mt-6 space-y-3">
+            {submissions.map((s) => (
+              <LastSubmissionCard
+                key={s.id}
+                submission={s}
+                onView={setViewing}
+                onDelete={(id) =>
+                  setConfirm({
+                    type: "one",
+                    id,
+                    companyName: s.companyName,
+                  })
+                }
+                deleting={deletingId === s.id || deletingAll}
+              />
+            ))}
+          </div>
+        </section>
+      </BezelCard>
 
       {viewing && (
         <SubmissionDetailModal
