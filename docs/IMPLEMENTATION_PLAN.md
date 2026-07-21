@@ -20,6 +20,7 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 | 6     | Custom form fields & `briefFormUtils`   | Done                           |
 | 7     | Submissions CRUD UI + mock/Gemini fixes | Done                           |
 | 8     | UI polish (`skills/UI_Skill.md`)        | Done                           |
+| 9     | Production deployment (Vercel + Render) | Done                           |
 
 ---
 
@@ -208,18 +209,18 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 
 ### 3.4 Components
 
-| Component                | Responsibility                                                     |
-| ------------------------ | ------------------------------------------------------------------ |
-| `BriefForm`              | All fields; preset + custom sector/services/budget; `AiModeToggle` |
-| `AiModeToggle`           | Radio group: Mock vs Real AI                                       |
-| `LoadingState`           | Spinner + `aria-live="polite"`                                     |
-| `ErrorBanner`            | Message + field errors, `role="alert"`                             |
-| `BriefSummaryResult`     | Headline, key points, approach; fallback badge                     |
-| `DiscoveryQuestionsList` | 4–6 questions, accessible list                                     |
-| `LastSubmissionsPanel`   | Fetch list, delete all button, modals                              |
-| `LastSubmissionCard`     | Row + View / Delete actions                                        |
-| `SubmissionDetailModal`  | Full past brief + summary + questions                              |
-| `ConfirmDeleteModal`     | Accessible confirm for delete one / all                            |
+| Component                | Responsibility                                                               |
+| ------------------------ | ---------------------------------------------------------------------------- |
+| `BriefForm`              | All fields; preset + custom sector/services/budget; `AiModeToggle`           |
+| `AiModeToggle`           | Radio group: Mock vs Real AI                                                 |
+| `LoadingState`           | Bezel skeleton placeholders (summary + questions grid); `aria-live="polite"` |
+| `ErrorBanner`            | Message + field errors, `role="alert"`                                       |
+| `BriefSummaryResult`     | Headline, key points, approach; fallback badge                               |
+| `DiscoveryQuestionsList` | 4–6 questions, accessible list                                               |
+| `LastSubmissionsPanel`   | Fetch list, delete all button, modals                                        |
+| `LastSubmissionCard`     | Row + View / Delete actions                                                  |
+| `SubmissionDetailModal`  | Full past brief + summary + questions                                        |
+| `ConfirmDeleteModal`     | Accessible confirm for delete one / all                                      |
 
 ### 3.5 Page
 
@@ -366,6 +367,36 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 
 ---
 
+## Phase 9 — Production Deployment (Vercel + Render)
+
+**Goal**: Live demo URLs; dev vs production env vars; CORS; GitHub auto-deploy on `main`.
+
+### Todos
+
+1. **Backend**
+   - [`render.yaml`](../render.yaml) — `beyondx-brief-builder-api`, `rootDir: backend`, `/health`
+   - `backend/src/config/cors.ts` — `FRONTEND_ORIGIN` (comma-separated)
+   - `backend/src/index.ts` — `HOST=0.0.0.0`
+   - TypeScript + `@types/*` in `dependencies` (Render production install skips devDeps)
+   - Create service on Render (Cursor Render MCP); set env vars in dashboard
+
+2. **Frontend**
+   - Link Vercel to GitHub; production `VITE_API_BASE_URL`
+   - Root [`vercel.json`](../vercel.json) — monorepo build (`npm run build --prefix frontend`)
+   - [`frontend/vercel.json`](../frontend/vercel.json) — SPA rewrites
+
+3. **Verify**
+   - Cross-link: Render `FRONTEND_ORIGIN` ↔ Vercel URL; Vercel `VITE_API_BASE_URL` ↔ Render URL
+   - Manual smoke checks — [`TEST_RESULTS.md`](TEST_RESULTS.md#manual-verification-live)
+
+### Acceptance criteria
+
+- `GET /health` returns OK on Render
+- Vercel frontend loads; submit + past submissions work (CORS)
+- No secrets committed; push to `main` redeploys both apps
+
+---
+
 ## Execution order
 
 ```
@@ -376,9 +407,11 @@ Phase 0 → 1 → 2 → 3 → 4 → 5
          Phase 7 (CRUD UI + fixes) — depends on Phase 2 API + Phase 3 panel
                 ↓
          Phase 8 (UI polish) — after Phase 3 frontend
+                ↓
+         Phase 9 (deployment) — after Phases 2–3 stable + tests green
 ```
 
-Do not skip Phase 1 (types) before Phase 2/3. Phase 4 needs Phases 2–3 code. Phase 6–8 are incremental on top of the MVP path.
+Do not skip Phase 1 (types) before Phase 2/3. Phase 4 needs Phases 2–3 code. Phase 6–9 are incremental on top of the MVP path.
 
 ---
 
@@ -387,6 +420,7 @@ Do not skip Phase 1 (types) before Phase 2/3. Phase 4 needs Phases 2–3 code. P
 ```
 backend/src/
   index.ts
+  config/cors.ts
   types/brief.ts
   db/sqlite.ts
   models/submission.model.ts
@@ -413,6 +447,10 @@ frontend/src/
   api/briefsApi.ts
   hooks/useBriefSubmission.ts  useScrollReveal.ts
   lib/analytics.ts  briefFormUtils.ts  uiClasses.ts
-  components/ui/  GlassCard  PrimaryButton  SelectField
+  components/ui/  BezelCard  PrimaryButton  SelectField
   types/brief.ts
+
+render.yaml          # Render blueprint
+vercel.json          # Monorepo Vercel build (frontend/)
+frontend/vercel.json # SPA rewrites
 ```

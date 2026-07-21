@@ -108,3 +108,18 @@ React hook state machine for form submit (mocked API layer).
 | **Total** | **5**      | **16** |                                                     |
 
 **Last verified:** 2026-07-22 (01:34 UTC+3)
+
+---
+
+## Manual verification (live)
+
+Not covered by `npm test` — run manually against production after deploy.
+
+| Check       | Endpoint / action                                       | Expected                                           |
+| ----------- | ------------------------------------------------------- | -------------------------------------------------- |
+| Health      | `GET …/health` on Render                                | `{ "status": "ok", "environment": "production" }`  |
+| List briefs | `GET …/api/briefs`                                      | `{ "success": true, "data": [...] }`               |
+| CORS        | Request from Vercel origin                              | `access-control-allow-origin` matches frontend URL |
+| End-to-end  | Mock submit on https://beyondx-brief-builder.vercel.app | Summary + questions; entry in past submissions     |
+
+Deploy workflow: [`AI_LOG.md`](AI_LOG.md#deployment). URLs: [`README.md`](../README.md#live-demo).

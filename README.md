@@ -1,16 +1,19 @@
 # Beyond X Brief Builder
 
-## Project Docs
-
-| Document                                                     | Purpose                                         |
-| ------------------------------------------------------------ | ----------------------------------------------- |
-| [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md)               | Requirements, architecture, assumptions, status |
-| [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) | Phased build steps + completion checklist       |
-| [`docs/AI_LOG.md`](docs/AI_LOG.md)                           | AI coding log (assessment requirement)          |
-| [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)               | Test coverage details + full run output         |
-| [`skills/UI_Skill.md`](skills/UI_Skill.md)                   | UI design skill used for frontend polish        |
+## Overview
 
 A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Developer** hiring assessment. Clients enter project details and receive a structured brief summary plus 4–6 discovery questions, powered by a deterministic mock AI provider with optional Google Gemini integration.
+
+This project implements the assessment brief:
+
+- Responsive, accessible form UI (React + Tailwind) with **preset or custom** sector, services, and budget
+- Dark zinc UI polished with [`skills/UI_Skill.md`](skills/UI_Skill.md) (glass panels, Geist, emerald accent)
+- Server-side validation and normalized API responses (Node/Express)
+- AI provider abstraction: deterministic mock (no API key) + optional **Gemini 3.1 Flash Lite** via env var
+- Last 5 submissions persisted in SQLite — **view**, **delete one**, or **delete all**
+- Automated tests (Vitest): 15 backend + 1 frontend
+- **Deployed live**: frontend on Vercel, backend on Render (see [Live Demo](#live-demo))
+- AI usage and SDLC process disclosed in [`docs/AI_LOG.md`](docs/AI_LOG.md)
 
 ## Live Demo
 
@@ -22,17 +25,15 @@ A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Develope
 
 **Repository:** https://github.com/omrmhd5/BeyondX-Brief-Builder
 
-## Overview
+## Project Docs
 
-This project implements the assessment brief:
-
-- Responsive, accessible form UI (React + Tailwind) with **preset or custom** sector, services, and budget
-- Dark zinc UI polished with [`skills/UI_Skill.md`](skills/UI_Skill.md) (glass panels, Geist, emerald accent)
-- Server-side validation and normalized API responses (Node/Express)
-- AI provider abstraction: deterministic mock (no API key) + optional **Gemini 3.1 Flash Lite** via env var
-- Last 5 submissions persisted in SQLite — **view**, **delete one**, or **delete all**
-- Automated tests (Vitest): 15 backend + 1 frontend
-- AI usage and SDLC process disclosed in [`docs/AI_LOG.md`](docs/AI_LOG.md)
+| Document                                                     | Purpose                                         |
+| ------------------------------------------------------------ | ----------------------------------------------- |
+| [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md)               | Requirements, architecture, assumptions, status |
+| [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) | Phased build steps + completion checklist       |
+| [`docs/AI_LOG.md`](docs/AI_LOG.md)                           | AI coding log (assessment requirement)          |
+| [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)               | Test coverage details + full run output         |
+| [`skills/UI_Skill.md`](skills/UI_Skill.md)                   | UI design skill used for frontend polish        |
 
 ## Setup
 
@@ -85,9 +86,12 @@ See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`]
 
 ### Deploy
 
-- **Frontend (Vercel):** root directory `frontend`, build `npm run build`, output `dist`. `vercel.json` handles SPA routing.
-- **Backend (Render):** `render.yaml` at repo root — web service `beyondx-brief-builder-api`, `rootDir: backend`, health check `/health`.
-- **One-click Render blueprint:** [Deploy from GitHub](https://dashboard.render.com/blueprint/new?repo=https://github.com/omrmhd5/BeyondX-Brief-Builder) — set `FRONTEND_ORIGIN` and `GEMINI_API_KEY` when prompted.
+- **Frontend (Vercel):** [`vercel.json`](vercel.json) at repo root builds `frontend/` (`npm run build --prefix frontend` → `frontend/dist`). [`frontend/vercel.json`](frontend/vercel.json) handles SPA routing. GitHub `main` auto-deploys.
+- **Backend (Render):** [`render.yaml`](render.yaml) — service `beyondx-brief-builder-api`, `rootDir: backend`, health check `/health`, Frankfurt. GitHub `main` auto-deploys.
+- **Production env:** set `FRONTEND_ORIGIN` on Render and `VITE_API_BASE_URL` on Vercel (see table above). `GEMINI_API_KEY` on Render only if using real AI — optional.
+- **Blueprint:** [Deploy backend from GitHub](https://dashboard.render.com/blueprint/new?repo=https://github.com/omrmhd5/BeyondX-Brief-Builder) — set `FRONTEND_ORIGIN` and `GEMINI_API_KEY` when prompted.
+
+How deployment was done (including Cursor MCP): [`docs/AI_LOG.md`](docs/AI_LOG.md#deployment).
 
 ### Install & run
 
@@ -120,8 +124,8 @@ See [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md) for requirements & architectu
 - `BriefBuilderPage` — split hero, form + submissions grid, results area
 - `useBriefSubmission` — submit state machine (idle → loading → success/error)
 - `briefFormUtils` — resolves preset + custom fields into API payload
-- `components/ui/` — `GlassCard`, `PrimaryButton`, `SelectField`; tokens in `lib/uiClasses.ts`
-- `useScrollReveal` — entry motion; skeleton loading state (no generic spinner)
+- `components/ui/` — `BezelCard`, `PrimaryButton`, `SelectField`; tokens in `lib/uiClasses.ts`
+- `useScrollReveal` — entry motion; bezel skeleton loading placeholders (no spinner)
 - Modals: `SubmissionDetailModal`, `ConfirmDeleteModal`
 
 ### Backend (Node/Express, layered)

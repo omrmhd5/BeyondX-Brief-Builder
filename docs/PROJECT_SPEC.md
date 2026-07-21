@@ -2,20 +2,20 @@
 
 ### Documentation split
 
-| Document                          | Purpose                                                                           | Audience                |
-| --------------------------------- | --------------------------------------------------------------------------------- | ----------------------- |
-| **`PROJECT_SPEC.md`** (this file) | What & why — requirements from the PDF, architecture, assumptions, feature status | Reviewers               |
-| **`IMPLEMENTATION_PLAN.md`**      | How — phased build steps (Phases 0–7), file map, test file list                   | Build reference         |
-| **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC (assessment requirement)            | Reviewers               |
-| **`README.md`** (root)            | Runbook — setup, env, architecture summary, **test instructions + summary**       | Anyone cloning the repo |
-| **`TEST_RESULTS.md`**             | What each test covers + full captured `npm test` output                           | Submission evidence     |
-| **`skills/UI_Skill.md`**          | Agent skill for frontend visual design (used in UI polish pass)                   | Build reference         |
+| Document                          | Purpose                                                                                 | Audience                |
+| --------------------------------- | --------------------------------------------------------------------------------------- | ----------------------- |
+| **`PROJECT_SPEC.md`** (this file) | What & why — requirements from the PDF, architecture, assumptions, feature status       | Reviewers               |
+| **`IMPLEMENTATION_PLAN.md`**      | How — phased build steps (Phases 0–9), file map, test file list                         | Build reference         |
+| **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC, deployment (assessment requirement)      | Reviewers               |
+| **`README.md`** (root)            | Runbook — setup, env, deployment, architecture summary, **test instructions + summary** | Anyone cloning the repo |
+| **`TEST_RESULTS.md`**             | What each test covers + full captured `npm test` output                                 | Submission evidence     |
+| **`skills/UI_Skill.md`**          | Agent skill for frontend visual design (used in UI polish pass)                         | Build reference         |
 
 Test **instructions** and a **summary** belong in **README** (assessment requirement). Per-test details and **full terminal output** are in **`TEST_RESULTS.md`**.
 
 Source: Beyond X hiring assessment (Mid–Senior Full-Stack AI Developer / Web Developer). Requirements are captured in this document; the confidential assessment PDF is **not** included in the public repository.
 
-**Status**: MVP complete. Post-MVP enhancements (view/delete submissions, custom form fields, confirm modals) implemented. See [§7 Built features](#7-built-features-as-implemented).
+**Status**: MVP complete and deployed live (Vercel + Render). Post-MVP enhancements (view/delete submissions, custom form fields, confirm modals) implemented. See [§7 Built features](#7-built-features-as-implemented).
 
 ---
 
@@ -42,13 +42,14 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
 | 5   | At least one automated test (+ instructions/results in README)                               | Done — [`README.md`](../README.md#test-results), [`TEST_RESULTS.md`](TEST_RESULTS.md) |
 | 6   | README (setup, architecture, trade-offs, assumptions, security, perf, analytics, next steps) | Done — [`README.md`](../README.md)                                                    |
 | 7   | AI coding log                                                                                | Done — [`AI_LOG.md`](AI_LOG.md)                                                       |
+| 8   | Live deployment (demo URL)                                                                   | Done — [`README.md`](../README.md#live-demo)                                          |
 
 ### Assessment rules to respect
 
 - Standalone — no external candidate collaboration.
 - State assumptions explicitly.
 - AI use disclosed in `docs/AI_LOG.md`.
-- Submission = repo/ZIP + README + tests + demo/screenshots + AI log. No hardcoded keys. Assessment PDF kept out of public repo (requirements in `PROJECT_SPEC.md`).
+- Submission = repo/ZIP + README + tests + **live demo** + AI log. No hardcoded keys. Assessment PDF kept out of public repo (requirements in `PROJECT_SPEC.md`).
 
 ---
 
@@ -99,6 +100,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
   - Per-request UI toggle; safe fallback to mock.
 - **Testing**: Vitest (backend + frontend).
 - **Env templates**: `backend/.env.example`, `frontend/.env.example` (committed; copy to `.env` locally).
+- **Hosting**: Vercel (frontend) + Render (backend); GitHub `main` auto-deploy. Runbook in [`README.md`](../README.md#deploy); MCP workflow in [`AI_LOG.md`](AI_LOG.md#deployment).
 - **Docs**: `docs/PROJECT_SPEC.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/AI_LOG.md`, `docs/TEST_RESULTS.md`, `skills/UI_Skill.md`, root `README.md`.
 
 ### 3.1 Frontend Architecture
@@ -117,7 +119,7 @@ frontend/src/
       LastSubmissionCard/
     SubmissionDetailModal/    # view full past brief
     ConfirmDeleteModal/     # delete one / delete all
-    ui/                     # GlassCard, PrimaryButton, SelectField
+    ui/                     # BezelCard, PrimaryButton, SelectField
   api/briefsApi.ts          # POST, GET, DELETE
   hooks/
     useBriefSubmission.ts
@@ -156,6 +158,16 @@ backend/src/
 | GET    | `/api/briefs`     | List last 5 submissions   |
 | DELETE | `/api/briefs/:id` | Delete one submission     |
 | DELETE | `/api/briefs`     | Delete all submissions    |
+
+### 3.4 Deployment (production model)
+
+| Component | Host   | Notes                                                                  |
+| --------- | ------ | ---------------------------------------------------------------------- |
+| Frontend  | Vercel | Static SPA; `VITE_API_BASE_URL` points at Render backend in production |
+| Backend   | Render | Node/Express; `FRONTEND_ORIGIN` for CORS; SQLite on ephemeral disk     |
+| Secrets   | Env    | `GEMINI_API_KEY` optional on Render; never in repo                     |
+
+Free-tier Render SQLite **resets on redeploy** — acceptable for this MVP/demo; persistent DB is a production next step (§6).
 
 ---
 
@@ -198,3 +210,4 @@ Beyond the PDF minimum:
 - SQLite `busy_timeout` to reduce lock hangs.
 - Mock `pickQuestions` safe algorithm (fixes infinite loop with custom inputs).
 - UI polish pass via `skills/UI_Skill.md`: glass panels, custom selects/scrollbars, skeleton loading, scroll reveal.
+- Live deployment (Vercel + Render) with dev/production env split and CORS.
