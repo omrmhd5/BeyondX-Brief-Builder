@@ -83,6 +83,9 @@ export default function BriefBuilderPage() {
                 onSubmit={() => void submit(formValues)}
                 disabled={isLoading}
                 fieldErrors={state.fieldErrors}
+                submitError={
+                  state.status === "error" ? state.errorMessage : undefined
+                }
               />
             </div>
 

@@ -36,6 +36,7 @@ interface BriefFormProps {
   onSubmit: () => void;
   disabled?: boolean;
   fieldErrors?: Record<string, string>;
+  submitError?: string;
 }
 
 export default function BriefForm({
@@ -44,6 +45,7 @@ export default function BriefForm({
   onSubmit,
   disabled = false,
   fieldErrors = {},
+  submitError,
 }: BriefFormProps) {
   const [clientErrors, setClientErrors] = useState<Record<string, string>>({});
 
@@ -339,6 +341,25 @@ export default function BriefForm({
           className="sm:w-auto">
           Generate Brief
         </PrimaryButton>
+
+        {(Object.keys(errors).length > 0 || submitError) && (
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-2xl border border-red-400/20 bg-red-500/5 px-4 py-3">
+            {submitError && (
+              <p className="text-sm font-medium text-red-300">{submitError}</p>
+            )}
+            {Object.keys(errors).length > 0 && (
+              <ul
+                className={`space-y-1 text-sm text-red-300/90 ${submitError ? "mt-2" : ""}`}>
+                {Object.entries(errors).map(([field, err]) => (
+                  <li key={field}>{err}</li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
       </form>
     </BezelCard>
   );
