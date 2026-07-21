@@ -1,17 +1,27 @@
 # Beyond X Brief Builder
 
+## Project Docs
+
+| Document                                                                                                                | Purpose                                         |
+| ----------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md)                                                                          | Requirements, architecture, assumptions, status |
+| [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md)                                                            | Phased build steps + completion checklist       |
+| [`docs/AI_LOG.md`](docs/AI_LOG.md)                                                                                      | AI coding log (assessment requirement)          |
+| [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)                                                                          | Test coverage details + full run output         |
+| [`docs/Candidate_Assessment … .pdf`](docs/Candidate_Assessment%20Full-Stack%20AI%20Developer%20-%20Web%20Developer.pdf) | Original brief                                  |
+
 A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Developer** hiring assessment. Clients enter project details and receive a structured brief summary plus 4–6 discovery questions, powered by a deterministic mock AI provider with optional Google Gemini integration.
 
 ## Overview
 
 This project implements the assessment brief:
 
-- Responsive, accessible form UI (React + Tailwind CSS)
+- Responsive, accessible form UI (React + Tailwind CSS) with **preset or custom** sector, services, and budget
 - Server-side validation and normalized API responses (Node/Express)
-- AI provider abstraction: deterministic mock (no API key required) + optional Gemini via env var
-- Last 5 submissions persisted in SQLite and displayed in the UI
-- Automated tests (Vitest) for validation, mock determinism, fallback, and API behavior
-- AI usage disclosed in [`docs/AI_LOG.md`](docs/AI_LOG.md)
+- AI provider abstraction: deterministic mock (no API key) + optional **Gemini 3.1 Flash Lite** via env var
+- Last 5 submissions persisted in SQLite — **view**, **delete one**, or **delete all**
+- Automated tests (Vitest): 15 backend + 1 frontend
+- AI usage and SDLC process disclosed in [`docs/AI_LOG.md`](docs/AI_LOG.md)
 
 ## Setup
 
@@ -22,15 +32,16 @@ This project implements the assessment brief:
 
 ### Environment variables
 
-**Backend** — copy `backend/.env.example` to `backend/.env`:
+**Backend** — create `backend/.env`:
 
 ```env
 PORT=5000
 FRONTEND_ORIGIN=http://localhost:5173
-GEMINI_API_KEY=          # optional — leave empty to use mock only
+GEMINI_API_KEY=                    # optional — leave empty for mock-only
+GEMINI_MODEL=gemini-3.1-flash-lite # optional — default shown
 ```
 
-**Frontend** — copy `frontend/.env.example` to `frontend/.env`:
+**Frontend** — create `frontend/.env`:
 
 ```env
 VITE_API_BASE_URL=http://localhost:5000
@@ -39,12 +50,11 @@ VITE_API_BASE_URL=http://localhost:5000
 ### Install & run
 
 ```bash
-# From repo root — install all deps
 npm install
 cd backend && npm install && cd ..
 cd frontend && npm install && cd ..
 
-# Run both servers (from root)
+# Run both (from root)
 npm run dev
 
 # Or separately:
@@ -55,19 +65,20 @@ cd frontend && npm run dev   # http://localhost:5173
 ### Run tests
 
 ```bash
-cd backend && npm test
-cd frontend && npm test
+cd backend && npm test   # 15 tests
+cd frontend && npm test    # 1 test
 ```
 
 ## Architecture
 
-See [`docs/plan.md`](docs/plan.md) for the full master plan.
+See [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md) for requirements & architecture and [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) for build phases.
 
 ### Frontend (React + Vite + Tailwind)
 
-- **Pages** compose **components** (`BriefBuilderPage` → `BriefForm`, results, last-5 panel)
-- `hooks/useBriefSubmission` manages submit flow state machine
-- `api/briefsApi.ts` wraps backend endpoints
+- `BriefBuilderPage` composes form, results, and past-submissions panel
+- `useBriefSubmission` — submit state machine (idle → loading → success/error)
+- `briefFormUtils` — resolves preset + custom fields into API payload
+- Modals: `SubmissionDetailModal`, `ConfirmDeleteModal`
 
 ### Backend (Node/Express, layered)
 
@@ -75,83 +86,86 @@ See [`docs/plan.md`](docs/plan.md) for the full master plan.
 routes → controllers → services → models
 ```
 
-- **Controllers**: thin orchestration only
-- **Services**: validation, AI generation + fallback, storage business logic
-- **Models**: SQLite data access (`better-sqlite3`)
+- **Gemini**: `gemini-3.1-flash-lite` (configurable)
+- **Mock**: deterministic; safe question selection (no infinite loops)
+- **SQLite**: last 5 rows, FIFO eviction
 
 ### API
 
-| Method | Endpoint      | Description                  |
-| ------ | ------------- | ---------------------------- |
-| GET    | `/health`     | Health check                 |
-| POST   | `/api/briefs` | Submit brief, get AI summary |
-| GET    | `/api/briefs` | List last 5 submissions      |
+| Method | Endpoint          | Description              |
+| ------ | ----------------- | ------------------------ |
+| GET    | `/health`         | Health check             |
+| POST   | `/api/briefs`     | Submit brief → AI result |
+| GET    | `/api/briefs`     | List last 5 submissions  |
+| DELETE | `/api/briefs/:id` | Delete one submission    |
+| DELETE | `/api/briefs`     | Delete all submissions   |
 
-Normalized response shape: `{ success: true, data }` or `{ success: false, error: { message, fieldErrors? } }`.
+Response shape: `{ success: true, data }` or `{ success: false, error: { message, fieldErrors? } }`.
 
 ## Trade-offs
 
-- **SQLite on Render**: lightweight for MVP, but Render's free tier has an **ephemeral filesystem** — the DB resets on redeploy/restart. Production would use Postgres or MongoDB Atlas with proper schema, indices, and retention policies.
-- **Manually-synced types**: frontend and backend types are duplicated (no shared package) to keep the monorepo simple.
-- **Mock-first design**: deterministic mock provider ensures reviewers can fully test without a Gemini key. The UI toggle lets recruiters choose mock vs real per submission.
+- **SQLite on Render**: lightweight for MVP; free tier has **ephemeral filesystem** — DB resets on redeploy. Production → Postgres or MongoDB Atlas.
+- **Manually-synced types** between frontend/backend (no shared package).
+- **Mock-first**: reviewers can test fully without a Gemini key; per-request toggle for real AI.
+- **Custom form fields**: presets for UX speed; free-text allowed because the PDF does not mandate fixed enums.
 
 ## Assumptions
 
-- "Needed services" options: Web Design, Branding, SEO, Content, Ads, App Dev (not specified in PDF).
-- Budget range = predefined dropdown; deadline = date picker.
-- "Last five local submissions" = server-side SQLite, globally scoped (no auth/user accounts in MVP).
-- Analytics events logged to browser/server console only (no real analytics vendor).
+- Preset sector/service/budget options are suggestions; users can enter custom values.
+- Deadline = date picker; server rejects past dates.
+- Last 5 submissions = server-side, globally scoped (no auth in MVP).
+- Analytics = console logging only (no real vendor).
+- Discovery questions (4–6) are **required** by the assessment PDF.
 
 ## Security & Privacy
 
-| Check                                                      | Status          |
-| ---------------------------------------------------------- | --------------- |
-| `.env` gitignored, no secrets in repo                      | Verified        |
-| `GEMINI_API_KEY` read from env only                        | Yes             |
-| CORS restricted to `FRONTEND_ORIGIN`                       | Yes (not `*`)   |
-| Rate limiting on `POST /api/briefs`                        | 30 req / 15 min |
-| Request body size limit                                    | 20 KB           |
-| User input escaped by React (no `dangerouslySetInnerHTML`) | Yes             |
-| Server-side validation (Zod) on all submissions            | Yes             |
+| Check                                                   | Status          |
+| ------------------------------------------------------- | --------------- |
+| `.env` gitignored, no secrets in repo                   | Verified        |
+| `GEMINI_API_KEY` from env only                          | Yes             |
+| CORS restricted to `FRONTEND_ORIGIN`                    | Yes             |
+| Rate limiting on `POST /api/briefs`                     | 30 req / 15 min |
+| Request body size limit                                 | 20 KB           |
+| React escapes user input (no `dangerouslySetInnerHTML`) | Yes             |
+| Server-side Zod validation                              | Yes             |
 
 ## Performance
 
-- Mock provider responses are near-instant (< 100 ms server-side).
-- Gemini calls bounded by 10 s timeout with safe fallback to mock.
-- SQLite table capped at 5 rows (FIFO eviction) — bounded storage growth.
+- Mock responses: near-instant (< 100 ms server-side).
+- Gemini: 10 s server timeout; 30 s client fetch timeout.
+- SQLite capped at 5 rows (FIFO).
+- SQLite `busy_timeout` = 5 s to avoid indefinite locks.
 
 ## Analytics Events
 
-Logged via `frontend/src/lib/analytics.ts` (console stand-in):
+Console stand-in via `frontend/src/lib/analytics.ts`:
 
-- `brief_submitted`
-- `brief_validation_failed`
-- `ai_provider_used`
-- `ai_provider_fallback`
+- `brief_submitted`, `brief_validation_failed`
+- `ai_provider_used`, `ai_provider_fallback`
 - `discovery_questions_viewed`
+- `brief_deleted`, `briefs_deleted_all`
 
 ## Production Next Steps
 
-- Real analytics vendor (Segment, PostHog, etc.)
+- Real analytics vendor
 - Auth / multi-tenant submission scoping
-- Persistent DB (Postgres/Mongo Atlas) for Render deployment
-- Advanced rate limiting / abuse protection
-- Shared types package or OpenAPI codegen
+- Persistent DB for Render (Postgres/Mongo Atlas)
+- Advanced rate limiting
+- Shared types or OpenAPI codegen
 
 ## Test Results
 
+**Instructions** (also in README per assessment):
+
 ```bash
-cd backend && npm test   # validation, mock determinism, fallback, API integration
-cd frontend && npm test  # useBriefSubmission hook test
+cd backend && npm test   # 15 tests
+cd frontend && npm test  # 1 test
 ```
 
-## AI Usage
+**Summary**: 5 test files, **16 tests passed** (15 backend + 1 frontend).
 
-Full disclosure in [`docs/AI_LOG.md`](docs/AI_LOG.md) — required by the assessment.
+Per-test coverage and full terminal output: [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).
 
-## Project Docs
+## AI Usage & SDLC
 
-- [`docs/plan.md`](docs/plan.md) — master plan (requirements, architecture, decisions)
-- [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) — phased build steps
-- [`docs/AI_LOG.md`](docs/AI_LOG.md) — AI usage disclosure
-- [`docs/Candidate_Assessment Full-Stack AI Developer - Web Developer.pdf`](docs/Candidate%20Assessment%20Full-Stack%20AI%20Developer%20-%20Web%20Developer.pdf) — original assessment brief
+Full disclosure — tools, prompts, defects, fixes, and engineering approach — in [`docs/AI_LOG.md`](docs/AI_LOG.md).
