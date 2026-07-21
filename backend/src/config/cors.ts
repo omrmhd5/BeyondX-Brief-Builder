@@ -7,7 +7,7 @@ export function getAllowedOrigins(): string[] {
   if (raw) {
     return raw
       .split(",")
-      .map((o) => o.trim())
+      .map((o: string) => o.trim())
       .filter(Boolean);
   }
 

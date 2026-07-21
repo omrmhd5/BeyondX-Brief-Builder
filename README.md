@@ -12,6 +12,16 @@
 
 A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Developer** hiring assessment. Clients enter project details and receive a structured brief summary plus 4–6 discovery questions, powered by a deterministic mock AI provider with optional Google Gemini integration.
 
+## Live Demo
+
+| App                      | URL                                                   |
+| ------------------------ | ----------------------------------------------------- |
+| **Frontend** (Vercel)    | https://beyondx-brief-builder.vercel.app              |
+| **Backend API** (Render) | https://beyondx-brief-builder-api.onrender.com        |
+| **Health check**         | https://beyondx-brief-builder-api.onrender.com/health |
+
+**Repository:** https://github.com/omrmhd5/BeyondX-Brief-Builder
+
 ## Overview
 
 This project implements the assessment brief:
@@ -63,6 +73,21 @@ VITE_API_BASE_URL=http://localhost:5000
 ```
 
 See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example) for committed templates (no secrets).
+
+### Development vs production URLs
+
+| Variable                       | Development (local)     | Production                                       |
+| ------------------------------ | ----------------------- | ------------------------------------------------ |
+| `FRONTEND_ORIGIN` (backend)    | `http://localhost:5173` | `https://beyondx-brief-builder.vercel.app`       |
+| `VITE_API_BASE_URL` (frontend) | `http://localhost:5000` | `https://beyondx-brief-builder-api.onrender.com` |
+
+`FRONTEND_ORIGIN` accepts comma-separated origins if you need both local and production during testing.
+
+### Deploy
+
+- **Frontend (Vercel):** root directory `frontend`, build `npm run build`, output `dist`. `vercel.json` handles SPA routing.
+- **Backend (Render):** `render.yaml` at repo root — web service `beyondx-brief-builder-api`, `rootDir: backend`, health check `/health`.
+- **One-click Render blueprint:** [Deploy from GitHub](https://dashboard.render.com/blueprint/new?repo=https://github.com/omrmhd5/BeyondX-Brief-Builder) — set `FRONTEND_ORIGIN` and `GEMINI_API_KEY` when prompted.
 
 ### Install & run
 
