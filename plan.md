@@ -2,7 +2,7 @@
 
 Source: `Candidate_Assessment Full-Stack AI Developer - Web Developer.pdf` (BEYOND X hiring assessment, 4-hour timebox, Mid-Senior Full-Stack AI Developer / Web Developer).
 
-## 1. Extracted Requirements (from the PDF, verbatim intent)
+## 1. Project Description
 
 ### Case brief
 
@@ -33,63 +33,132 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
 - State assumptions explicitly.
 - Submission = repo or ZIP with source, README, test instructions/results, screenshots or short demo, AI coding log. **No hardcoded keys. No no-code-only submission.**
 
-## 2. Key Decisions (confirmed with you)
+## 2. Functional Requirements / Features / Use Cases
 
-- **Stack**: React (Vite) frontend + Node.js/Express backend, TypeScript. Monorepo with `/frontend` and `/backend` at repo root.
-- **Persistence**: SQLite file via backend (e.g. `better-sqlite3`), storing only the last 5 submissions (auto-pruned). We explicitly accept and document the trade-off that Render's free web services have an **ephemeral filesystem** — the SQLite file resets on redeploy/restart. README will explain the production data model (e.g. Postgres/Mongo Atlas with proper schema, indices, retention) as the real-world upgrade path.
+### Use case: Submit a brief
+
+1. User opens the app and sees a form with fields: company name, sector, objective, audience, needed services (multi-select), budget range, desired deadline.
+2. User fills the form. Client-side hints validate as they type (required fields, formats).
+3. User picks an AI mode: **Mock** (default, deterministic) or **Real AI (Gemini)** via a toggle/switch.
+4. User submits. Form shows a **loading** state (disabled inputs, spinner/skeleton).
+5. Backend validates the payload server-side regardless of client validation.
+   - If invalid → normalized error response → UI shows **clear, field-level error messages** (accessible, `aria-live`).
+   - If valid → AI provider (mock or real, per toggle, with safe fallback to mock if real fails or no key) generates:
+     - A structured **brief summary**.
+     - **4–6 discovery questions**.
+6. UI shows a **success** state with the structured brief summary and discovery questions.
+7. Submission is persisted server-side; the **last 5 submissions** list (visible in the UI) updates, oldest evicted beyond 5.
+
+### Use case: View last 5 submissions
+
+- On load and after each successful submission, the UI fetches/displays the last 5 stored submissions (summary + timestamp + which AI mode was used).
+
+### Use case: AI mode fallback
+
+- If "Real AI" is selected but no `GEMINI_API_KEY` is configured, or the Gemini call fails/times out, the backend transparently falls back to the mock provider and **tells the user** (e.g. a small notice: "Real AI unavailable, showing mock result") rather than failing silently or erroring out.
+
+### Cross-cutting feature requirements
+
+- **Accessibility**: labeled inputs (`label`/`aria-*`), keyboard navigable, error/loading regions announced via `aria-live`, sufficient color contrast.
+- **Responsive/mobile**: usable form and results on small screens (single-column layout, tappable controls).
+- **Analytics events** (logged, no real vendor): e.g. `brief_submitted`, `brief_validation_failed`, `ai_provider_used` (mock/real), `ai_provider_fallback`, `discovery_questions_viewed`.
+- **Normalized API response schema**: consistent `{ success, data, error }` shape for both success and error cases.
+
+## 3. Technical Stack & Key Decisions
+
+- **Stack**: React (Vite) frontend + Node.js/Express backend, TypeScript, **Tailwind CSS** for styling. Monorepo with `/frontend` and `/backend` at repo root.
+- **Persistence**: SQLite file via backend (`better-sqlite3`), storing only the last 5 submissions (auto-pruned, FIFO). Accepted trade-off: Render's free web services have an **ephemeral filesystem** — the SQLite file resets on redeploy/restart. README will explain the production data model (e.g. Postgres/Mongo Atlas with proper schema, indices, retention) as the real-world upgrade path.
 - **AI provider**: Provider abstraction (`AiProvider` interface) with two implementations:
   - `MockProvider` — deterministic, rule-based, no network calls, always available.
   - `GeminiProvider` — real call to Google Gemini, reads `GEMINI_API_KEY` from env, never hardcoded.
-  - A **per-request UI toggle** (switch/button on the form) lets the user pick "Mock" or "Real AI" per submission. Backend honors the choice **only if** a key is configured; otherwise it safely falls back to mock and communicates that in the response (no silent failures).
+  - A **per-request UI toggle** (switch/button on the form) lets the user pick "Mock" or "Real AI" per submission. Backend honors the choice **only if** a key is configured and the call succeeds; otherwise it safely falls back to mock and communicates that in the response (no silent failures).
 - **Testing**: Vitest for both frontend and backend.
-- **Repo layout**: monorepo, `/frontend`, `/backend`, root-level `README.md`, `AI_LOG.md`, this `plan.md`.
+- **Repo layout**: monorepo, `/frontend`, `/backend`, root-level `README.md`, `AI_LOG.md`, `plan.md`, `IMPLEMENTATION_PLAN.md`.
 
-## 3. Documents to Produce
+### 3.1 Frontend Architecture — React, component-based, pages + components
 
-We will produce three focused documents (in addition to this master plan) before writing code:
+**Styling**: Tailwind CSS (via Vite plugin). Utility classes applied directly in JSX; no separate CSS modules per component unless a one-off exception is needed. Responsive breakpoints (`sm:`, `md:`) and accessible focus/ring utilities used for mobile and a11y.
 
-1. **`docs/FEATURES.md`** — Feature Requirements Document
-   - User-facing form fields & validation rules (company name, sector, objective, audience, needed services [multi-select], budget range, deadline).
-   - Submission flow states: idle → validating → loading → success/error.
-   - Brief summary output structure + 4–6 discovery questions.
-   - Last-5-submissions panel (view, maybe clear).
-   - Mock/Real AI toggle behavior and messaging.
-   - Accessibility requirements (labels, aria-live for errors/loading, keyboard nav, mobile breakpoints).
-   - Analytics events to emit (e.g. `brief_submitted`, `brief_validation_failed`, `ai_provider_used`, `discovery_questions_viewed`).
+```
+frontend/src/
+  pages/
+    BriefBuilderPage/        # the single main page (form + results + last-5 panel)
+      BriefBuilderPage.tsx
+  components/
+    BriefForm/                # form: fields, client validation hints, AI mode toggle
+    AiModeToggle/              # reusable mock/real switch
+    LoadingState/              # reusable spinner/skeleton
+    ErrorBanner/                # reusable inline error / field error display
+    BriefSummaryResult/         # renders structured brief summary
+    DiscoveryQuestionsList/     # renders 4-6 discovery questions
+    LastSubmissionsPanel/       # list of last 5 submissions
+      LastSubmissionCard/       # one submission row/card (reusable)
+  api/
+    briefsApi.ts               # fetch wrappers for POST/GET /api/briefs
+  types/
+    brief.ts                   # shared frontend types (mirrors backend contract)
+  hooks/
+    useBriefSubmission.ts       # encapsulates submit flow state machine (idle/loading/success/error)
+```
 
-2. **`docs/ARCHITECTURE.md`** — Technical / Architecture Requirements Document
-   - System diagram (frontend ↔ backend API ↔ AI provider abstraction ↔ SQLite).
-   - API contract: `POST /api/briefs` request/response schema (normalized), error shape, status codes.
-   - Validation layer (e.g. Zod/Yup schema shared conceptually between client hints and server enforcement).
-   - AI provider interface contract (`generateBrief(input): BriefResult`), mock determinism rules, Gemini failure/timeout handling and fallback logic.
-   - Data model: current SQLite table (submissions, capped at 5, FIFO eviction) vs. production model (proper DB, user accounts, audit trail, rate limiting).
-   - Security/privacy: env var handling, `.env.example`, no secrets in git, input sanitization, CORS, rate limiting notes.
-   - Deployment notes: Render backend (env vars, ephemeral disk caveat), frontend static hosting (e.g. Vercel/Netlify or same Render).
+- **Pages** compose **components**; pages own page-level state/data-fetching, components are presentational/reusable where possible (e.g. `LoadingState`, `ErrorBanner`, `LastSubmissionCard` are generic enough to reuse).
+- **Tailwind**: shared design tokens (colors, spacing, typography) configured in `tailwind.config.js`; keep class lists readable by extracting repeated patterns into small wrapper components rather than custom CSS files.
+- One primary page for the MVP (`BriefBuilderPage`); structure still leaves room to add pages later (e.g. a details page) without restructuring.
 
-3. **`docs/MVP_PLAN.md`** — MVP Implementation Plan
-   - Ordered build steps mapped to the PDF's recommended time plan (scaffold → implement → test/security/perf review → README/AI log/final run).
-   - Explicit "cut list" — what's in scope for the 4-hour MVP vs. explicitly deferred (documented as "unfinished/next steps" per assessment rules).
+### 3.2 Backend Architecture — Node/Express, layered (routes → controllers → services → models)
 
-## 4. MVP Implementation Steps (high level, detailed further in `docs/MVP_PLAN.md`)
+```
+backend/src/
+  routes/
+    briefs.routes.ts           # defines /api/briefs endpoints, wires to controllers
+  controllers/
+    briefs.controller.ts       # thin: parse req, call service, shape res — no business logic
+  services/
+    briefValidation.service.ts # server-side validation rules (e.g. Zod schema + checks)
+    briefGeneration.service.ts # orchestrates AI provider selection + fallback logic
+    briefStorage.service.ts    # business logic for persisting + retrieving last 5
+    ai/
+      aiProvider.interface.ts  # AiProvider contract: generateBrief(input) -> BriefResult
+      mockProvider.service.ts  # deterministic mock implementation
+      geminiProvider.service.ts# real Gemini implementation, reads env key
+  models/
+    submission.model.ts        # SQLite table access (schema, insert, getLastN, prune)
+  db/
+    sqlite.ts                  # DB connection/init
+  middleware/
+    errorHandler.ts            # normalizes error responses
+    validateRequest.ts         # generic validation middleware helper
+```
 
-1. **Scaffold**: monorepo, Vite React + TS frontend, Express + TS backend, shared types folder, ESLint/Prettier, `.env.example`, `.gitignore` (ensures no secrets committed).
-2. **Backend core**: `POST /api/briefs` endpoint, request validation (Zod), AI provider abstraction (Mock + Gemini), SQLite persistence capped at 5 rows, `GET /api/briefs` for last 5.
-3. **Frontend core**: form with all required fields, client-side hints + server error display, mock/real toggle, loading/success/error states, results view (summary + discovery questions), last-5 list, responsive/accessible styling.
-4. **Testing**: Vitest tests — at least backend validation test + mock provider determinism test (and ideally one frontend test).
-5. **Security/perf pass**: verify no secrets committed, basic rate limiting/input caps, CORS config, response time sanity check.
-6. **Docs**: `README.md` (setup, architecture, trade-offs, assumptions, security/privacy, performance, analytics events, next steps), `AI_LOG.md` (prompts, tools, human review/changes), screenshots.
-7. **Final run-through** against the PDF's "Before you submit" checklist.
+- **Routes**: only route → controller wiring.
+- **Controllers**: orchestration only — receive request, call the right service(s), map result to the normalized response shape, no business rules inside.
+- **Services**: own all business logic — validation rules, AI-provider selection/fallback, persistence rules (cap at 5, eviction order). `briefGeneration.service` decides mock vs. real and handles failure-safe fallback.
+- **Models**: data access only (SQLite queries), no business logic.
 
-## 5. Explicit Assumptions (to state in README per assessment rules)
+## 4. Assumptions & Things to Highlight (for README)
 
-- "Needed services" is a multi-select list (e.g. Web Design, Branding, SEO, Content, Ads, App Dev) — exact options assumed since not specified in the PDF, will be clearly noted as an assumption.
-- Budget range and deadline are free-form/bounded selects (assumption: budget = predefined bracket dropdown, deadline = date picker), documented as assumption.
-- "Last five local submissions" interpreted as: stored server-side (SQLite), scoped globally to the running instance (no auth/user concept in this MVP) — documented as a simplification vs. production (which would scope per-account).
-- Analytics events are logged client/server-side to console/log (no real analytics vendor wired), documented as a stand-in for a production analytics pipeline.
+To state explicitly in the README per assessment rules ("state assumptions clearly"):
 
-## 6. Open Items / Deferred (to be listed under "unfinished" if time runs out)
+- "Needed services" is a multi-select list (e.g. Web Design, Branding, SEO, Content, Ads, App Dev) — exact options assumed since not specified in the PDF.
+- Budget range is a predefined bracket dropdown; deadline is a date picker — assumed formats since not specified.
+- "Last five local submissions" is interpreted as: stored server-side (SQLite), scoped globally to the running instance (no auth/user/account concept in this MVP) — a simplification vs. production, which would scope per-account.
+- Analytics events are logged to console/server log only (no real analytics vendor wired) — a stand-in for a production analytics pipeline, explained as such.
+- Things to highlight to the reviewer in the README explicitly:
+  - Why SQLite was chosen over Mongo/Postgres for this MVP, and the explicit Render ephemeral-disk caveat (data resets on redeploy/restart) plus the production upgrade path.
+  - The Mock/Real AI toggle exists specifically so a reviewer without a Gemini key can still fully exercise the app deterministically.
+  - Safe-fallback behavior: real AI failures never break the flow, they degrade to mock with a visible notice.
+  - Layered backend architecture rationale (routes/controllers/services/models) and component-based frontend rationale (pages vs. reusable components) as evidence of production-minded structure, not just "make it work" code.
+  - AI usage disclosure lives in `AI_LOG.md`, not buried — call this out in the README.
+
+## 5. Implementation Plan Reference
+
+Detailed, ordered build steps (mapped to the PDF's recommended time plan: scaffold → implement → test/security/perf review → docs/final run) will be written in a separate **`IMPLEMENTATION_PLAN.md`**, not duplicated here.
+
+## 6. Open Items / Deferred (to be listed under "unfinished" if time runs out, and called out in README)
 
 - Real analytics vendor integration.
 - Auth / multi-tenant submission scoping.
 - Persistent DB across Render redeploys (would require Postgres/Mongo Atlas in production).
 - Advanced rate limiting / abuse protection beyond basic MVP checks.
+
+These should also be explicitly surfaced in the README's "production next steps" section, per the deliverables checklist.
