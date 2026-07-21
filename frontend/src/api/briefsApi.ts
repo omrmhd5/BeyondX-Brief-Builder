@@ -53,6 +53,34 @@ export async function fetchRecentBriefs(): Promise<
   return handleResponse<StoredSubmission[]>(response);
 }
 
+export async function deleteBrief(
+  id: number,
+): Promise<ApiResponse<{ id: number; deleted: true }>> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/api/briefs/${id}`, {
+      method: "DELETE",
+    });
+  } catch {
+    throw new NetworkError();
+  }
+  return handleResponse<{ id: number; deleted: true }>(response);
+}
+
+export async function deleteAllBriefs(): Promise<
+  ApiResponse<{ deletedCount: number }>
+> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE}/api/briefs`, {
+      method: "DELETE",
+    });
+  } catch {
+    throw new NetworkError();
+  }
+  return handleResponse<{ deletedCount: number }>(response);
+}
+
 export function isApiError<T>(res: ApiResponse<T>): res is ApiErrorResponse {
   return !res.success;
 }

@@ -69,3 +69,40 @@ describe("GET /api/briefs", () => {
     expect(Array.isArray(res.body.data)).toBe(true);
   });
 });
+
+describe("DELETE /api/briefs/:id", () => {
+  it("deletes a submission by id", async () => {
+    const createRes = await request(app)
+      .post("/api/briefs")
+      .send(validPayload)
+      .expect(201);
+
+    const listRes = await request(app).get("/api/briefs").expect(200);
+    const id = listRes.body.data[0].id;
+
+    const deleteRes = await request(app)
+      .delete(`/api/briefs/${id}`)
+      .expect(200);
+
+    expect(deleteRes.body.success).toBe(true);
+    expect(deleteRes.body.data.deleted).toBe(true);
+  });
+
+  it("returns 404 for unknown id", async () => {
+    const res = await request(app).delete("/api/briefs/99999").expect(404);
+    expect(res.body.success).toBe(false);
+  });
+});
+
+describe("DELETE /api/briefs", () => {
+  it("deletes all submissions", async () => {
+    await request(app).post("/api/briefs").send(validPayload).expect(201);
+
+    const res = await request(app).delete("/api/briefs").expect(200);
+    expect(res.body.success).toBe(true);
+    expect(res.body.data.deletedCount).toBeGreaterThanOrEqual(1);
+
+    const listRes = await request(app).get("/api/briefs").expect(200);
+    expect(listRes.body.data).toHaveLength(0);
+  });
+});

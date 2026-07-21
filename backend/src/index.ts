@@ -13,7 +13,7 @@ const FRONTEND_ORIGIN = process.env.FRONTEND_ORIGIN ?? "http://localhost:5173";
 app.use(
   cors({
     origin: FRONTEND_ORIGIN,
-    methods: ["GET", "POST", "OPTIONS"],
+    methods: ["GET", "POST", "DELETE", "OPTIONS"],
   }),
 );
 app.use(express.json({ limit: "20kb" }));

@@ -72,3 +72,15 @@ export function pruneOlderThanLastN(n = 5): void {
      )`,
   ).run(n);
 }
+
+export function deleteSubmissionById(id: number): boolean {
+  const db = getDb();
+  const result = db.prepare(`DELETE FROM submissions WHERE id = ?`).run(id);
+  return result.changes > 0;
+}
+
+export function deleteAllSubmissions(): number {
+  const db = getDb();
+  const result = db.prepare(`DELETE FROM submissions`).run();
+  return result.changes;
+}

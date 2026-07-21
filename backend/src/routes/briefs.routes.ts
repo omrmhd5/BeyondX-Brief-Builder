@@ -1,6 +1,11 @@
 import { Router } from "express";
 import rateLimit from "express-rate-limit";
-import { createBrief, listBriefs } from "../controllers/briefs.controller.js";
+import {
+  createBrief,
+  deleteAllBriefs,
+  deleteBrief,
+  listBriefs,
+} from "../controllers/briefs.controller.js";
 
 const router = Router();
 
@@ -17,5 +22,7 @@ const createBriefLimiter = rateLimit({
 
 router.get("/", listBriefs);
 router.post("/", createBriefLimiter, createBrief);
+router.delete("/", deleteAllBriefs);
+router.delete("/:id", deleteBrief);
 
 export default router;

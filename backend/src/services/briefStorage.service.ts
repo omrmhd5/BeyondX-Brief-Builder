@@ -1,4 +1,6 @@
 import {
+  deleteAllSubmissions,
+  deleteSubmissionById,
   getLastN,
   insertSubmission,
   pruneOlderThanLastN,
@@ -46,4 +48,12 @@ export function listRecentSubmissions(): StoredSubmission[] {
     aiModeUsed: row.aiModeUsed,
     fallbackApplied: row.fallbackApplied === 1,
   }));
+}
+
+export function removeSubmission(id: number): boolean {
+  return deleteSubmissionById(id);
+}
+
+export function removeAllSubmissions(): number {
+  return deleteAllSubmissions();
 }
