@@ -1,11 +1,8 @@
 import { useCallback, useState } from "react";
 import { isApiError, NetworkError, submitBrief } from "../api/briefsApi";
+import { resolveBriefInput } from "../lib/briefFormUtils";
 import { track } from "../lib/analytics";
-import type {
-  BriefCreateResponse,
-  BriefFormValues,
-  BriefSubmissionInput,
-} from "../types/brief";
+import type { BriefCreateResponse, BriefFormValues } from "../types/brief";
 
 export type SubmissionStatus =
   | "idle"
@@ -29,16 +26,7 @@ export function useBriefSubmission() {
     setState({ status: "loading" });
     track("brief_submitted", { aiMode: values.aiMode });
 
-    const input: BriefSubmissionInput = {
-      companyName: values.companyName.trim(),
-      sector: values.sector as BriefSubmissionInput["sector"],
-      objective: values.objective.trim(),
-      audience: values.audience.trim(),
-      neededServices: values.neededServices,
-      budgetRange: values.budgetRange as BriefSubmissionInput["budgetRange"],
-      deadline: values.deadline,
-      aiMode: values.aiMode,
-    };
+    const input = resolveBriefInput(values);
 
     try {
       const res = await submitBrief(input);

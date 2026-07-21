@@ -42,4 +42,14 @@ describe("validateBriefInput", () => {
     const result = validateBriefInput({ ...validPayload, aiMode: "invalid" });
     expect(result.success).toBe(false);
   });
+
+  it("accepts custom sector, services, and budget", () => {
+    const result = validateBriefInput({
+      ...validPayload,
+      sector: "Hospitality & Tourism",
+      neededServices: ["Web Design", "Video Production"],
+      budgetRange: "$25,000 USD",
+    });
+    expect(result.success).toBe(true);
+  });
 });

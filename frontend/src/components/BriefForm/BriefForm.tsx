@@ -4,17 +4,24 @@ import {
   SECTORS,
   SERVICE_OPTIONS,
   type BriefFormValues,
-  type ServiceOption,
 } from "../../types/brief";
+import {
+  BUDGET_CUSTOM,
+  SECTOR_CUSTOM,
+  validateBriefForm,
+} from "../../lib/briefFormUtils";
 import AiModeToggle from "../AiModeToggle/AiModeToggle";
 
 export const defaultFormValues: BriefFormValues = {
   companyName: "",
-  sector: "",
+  sectorPreset: "",
+  sectorCustom: "",
   objective: "",
   audience: "",
   neededServices: [],
-  budgetRange: "",
+  customServices: "",
+  budgetPreset: "",
+  customBudgetAmount: "",
   deadline: "",
   aiMode: "mock",
 };
@@ -25,20 +32,6 @@ interface BriefFormProps {
   onSubmit: () => void;
   disabled?: boolean;
   fieldErrors?: Record<string, string>;
-}
-
-function validateClient(values: BriefFormValues): Record<string, string> {
-  const errors: Record<string, string> = {};
-  if (!values.companyName.trim())
-    errors.companyName = "Company name is required";
-  if (!values.sector) errors.sector = "Sector is required";
-  if (!values.objective.trim()) errors.objective = "Objective is required";
-  if (!values.audience.trim()) errors.audience = "Audience is required";
-  if (values.neededServices.length === 0)
-    errors.neededServices = "Select at least one service";
-  if (!values.budgetRange) errors.budgetRange = "Budget range is required";
-  if (!values.deadline) errors.deadline = "Deadline is required";
-  return errors;
 }
 
 const inputClass =
@@ -57,14 +50,14 @@ export default function BriefForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const errs = validateClient(values);
+    const errs = validateBriefForm(values);
     setClientErrors(errs);
     if (Object.keys(errs).length === 0) {
       onSubmit();
     }
   };
 
-  const toggleService = (service: ServiceOption) => {
+  const toggleService = (service: string) => {
     const next = values.neededServices.includes(service)
       ? values.neededServices.filter((s) => s !== service)
       : [...values.neededServices, service];
@@ -95,44 +88,66 @@ export default function BriefForm({
             disabled={disabled}
             className={inputClass}
             aria-invalid={!!errors.companyName}
-            aria-describedby={
-              errors.companyName ? "companyName-error" : undefined
-            }
           />
           {errors.companyName && (
-            <p id="companyName-error" className="mt-1 text-xs text-red-600">
-              {errors.companyName}
-            </p>
+            <p className="mt-1 text-xs text-red-600">{errors.companyName}</p>
           )}
         </div>
 
         <div>
           <label
-            htmlFor="sector"
+            htmlFor="sectorPreset"
             className="block text-sm font-medium text-slate-700">
             Sector
           </label>
           <select
-            id="sector"
-            value={values.sector}
+            id="sectorPreset"
+            value={values.sectorPreset}
             onChange={(e) =>
               onChange({
                 ...values,
-                sector: e.target.value as BriefFormValues["sector"],
+                sectorPreset: e.target.value,
+                sectorCustom:
+                  e.target.value === SECTOR_CUSTOM ? values.sectorCustom : "",
               })
             }
             disabled={disabled}
             className={inputClass}
             aria-invalid={!!errors.sector}>
             <option value="">Select sector</option>
-            {SECTORS.map((s) => (
+            {SECTORS.filter((s) => s !== "Other").map((s) => (
               <option key={s} value={s}>
                 {s}
               </option>
             ))}
+            <option value={SECTOR_CUSTOM}>Custom sector…</option>
           </select>
           {errors.sector && (
             <p className="mt-1 text-xs text-red-600">{errors.sector}</p>
+          )}
+          {values.sectorPreset === SECTOR_CUSTOM && (
+            <div className="mt-2">
+              <label htmlFor="sectorCustom" className="sr-only">
+                Custom sector
+              </label>
+              <input
+                id="sectorCustom"
+                type="text"
+                placeholder="e.g. Hospitality, Logistics"
+                value={values.sectorCustom}
+                onChange={(e) =>
+                  onChange({ ...values, sectorCustom: e.target.value })
+                }
+                disabled={disabled}
+                className={inputClass}
+                aria-invalid={!!errors.sectorCustom}
+              />
+              {errors.sectorCustom && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.sectorCustom}
+                </p>
+              )}
+            </div>
           )}
         </div>
       </div>
@@ -197,6 +212,28 @@ export default function BriefForm({
             </label>
           ))}
         </div>
+        <div className="mt-3">
+          <label
+            htmlFor="customServices"
+            className="block text-sm font-medium text-slate-700">
+            Custom services
+          </label>
+          <input
+            id="customServices"
+            type="text"
+            placeholder="e.g. Video Production, Consulting (comma-separated)"
+            value={values.customServices}
+            onChange={(e) =>
+              onChange({ ...values, customServices: e.target.value })
+            }
+            disabled={disabled}
+            className={inputClass}
+            aria-invalid={!!errors.neededServices}
+          />
+          <p className="mt-1 text-xs text-slate-500">
+            Add your own services, separated by commas
+          </p>
+        </div>
         {errors.neededServices && (
           <p className="mt-1 text-xs text-red-600">{errors.neededServices}</p>
         )}
@@ -205,17 +242,21 @@ export default function BriefForm({
       <div className="grid gap-5 md:grid-cols-2">
         <div>
           <label
-            htmlFor="budgetRange"
+            htmlFor="budgetPreset"
             className="block text-sm font-medium text-slate-700">
             Budget Range
           </label>
           <select
-            id="budgetRange"
-            value={values.budgetRange}
+            id="budgetPreset"
+            value={values.budgetPreset}
             onChange={(e) =>
               onChange({
                 ...values,
-                budgetRange: e.target.value as BriefFormValues["budgetRange"],
+                budgetPreset: e.target.value,
+                customBudgetAmount:
+                  e.target.value === BUDGET_CUSTOM
+                    ? values.customBudgetAmount
+                    : "",
               })
             }
             disabled={disabled}
@@ -227,9 +268,35 @@ export default function BriefForm({
                 {b}
               </option>
             ))}
+            <option value={BUDGET_CUSTOM}>Custom amount…</option>
           </select>
           {errors.budgetRange && (
             <p className="mt-1 text-xs text-red-600">{errors.budgetRange}</p>
+          )}
+          {values.budgetPreset === BUDGET_CUSTOM && (
+            <div className="mt-2">
+              <label htmlFor="customBudgetAmount" className="sr-only">
+                Custom budget amount
+              </label>
+              <input
+                id="customBudgetAmount"
+                type="text"
+                inputMode="decimal"
+                placeholder="e.g. $25,000 or 25000 USD"
+                value={values.customBudgetAmount}
+                onChange={(e) =>
+                  onChange({ ...values, customBudgetAmount: e.target.value })
+                }
+                disabled={disabled}
+                className={inputClass}
+                aria-invalid={!!errors.customBudgetAmount}
+              />
+              {errors.customBudgetAmount && (
+                <p className="mt-1 text-xs text-red-600">
+                  {errors.customBudgetAmount}
+                </p>
+              )}
+            </div>
           )}
         </div>
 

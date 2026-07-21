@@ -30,11 +30,14 @@ describe("useBriefSubmission", () => {
     await act(async () => {
       await result.current.submit({
         companyName: "A",
-        sector: "Technology",
+        sectorPreset: "Technology",
+        sectorCustom: "",
         objective: "Test objective here",
         audience: "Developers",
         neededServices: ["Web Design"],
-        budgetRange: "$5,000 - $15,000",
+        customServices: "",
+        budgetPreset: "$5,000 - $15,000",
+        customBudgetAmount: "",
         deadline: "2030-01-01",
         aiMode: "mock",
       });

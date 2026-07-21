@@ -39,11 +39,11 @@ export type BudgetRange = (typeof BUDGET_RANGES)[number];
 
 export interface BriefSubmissionInput {
   companyName: string;
-  sector: Sector;
+  sector: string;
   objective: string;
   audience: string;
-  neededServices: ServiceOption[];
-  budgetRange: BudgetRange;
+  neededServices: string[];
+  budgetRange: string;
   deadline: string;
   aiMode: AiMode;
 }
@@ -94,11 +94,14 @@ export type ApiResponse<T> = ApiSuccessResponse<T> | ApiErrorResponse;
 
 export interface BriefFormValues {
   companyName: string;
-  sector: Sector | "";
+  sectorPreset: string;
+  sectorCustom: string;
   objective: string;
   audience: string;
-  neededServices: ServiceOption[];
-  budgetRange: BudgetRange | "";
+  neededServices: string[];
+  customServices: string;
+  budgetPreset: string;
+  customBudgetAmount: string;
   deadline: string;
   aiMode: AiMode;
 }

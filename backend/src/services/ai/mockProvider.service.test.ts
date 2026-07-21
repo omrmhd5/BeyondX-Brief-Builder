@@ -26,4 +26,21 @@ describe("MockProvider", () => {
     expect(result.discoveryQuestions.length).toBeLessThanOrEqual(6);
     expect(result.headline).toContain("TestCo");
   });
+
+  it("completes with fully custom sector, services, and budget", async () => {
+    const start = Date.now();
+    const result = await mockProvider.generateBrief({
+      companyName: "Custom Hotel Group",
+      sector: "Hospitality & Tourism",
+      objective: "Launch a new booking website for boutique hotels",
+      audience: "Leisure and business travelers",
+      neededServices: ["Video Production", "Consulting", "Event Marketing"],
+      budgetRange: "$25,000 USD flexible",
+      deadline: "2030-06-15",
+      aiMode: "mock",
+    });
+
+    expect(Date.now() - start).toBeLessThan(1000);
+    expect(result.discoveryQuestions.length).toBeGreaterThanOrEqual(4);
+  });
 });

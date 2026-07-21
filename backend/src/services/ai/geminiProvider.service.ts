@@ -52,8 +52,10 @@ export class GeminiProvider implements AiProvider {
     const timeout = setTimeout(() => controller.abort(), TIMEOUT_MS);
 
     try {
+      const modelName =
+        process.env.GEMINI_MODEL?.trim() || "gemini-3.1-flash-lite";
       const genAI = new GoogleGenerativeAI(this.apiKey);
-      const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+      const model = genAI.getGenerativeModel({ model: modelName });
 
       const result = await model.generateContent({
         contents: [{ role: "user", parts: [{ text: buildPrompt(input) }] }],

@@ -72,22 +72,32 @@ function pickQuestions(input: BriefSubmissionInput): string[] {
     `Who on your team will be the day-to-day point of contact through the ${input.deadline} deadline?`,
   ];
 
+  const unique = [...new Set(combined)];
   const seed = hashString(
     `${input.companyName}|${input.sector}|${input.objective}|${input.audience}|${input.neededServices.join(",")}`,
   );
 
   const selected: string[] = [];
-  let idx = seed % combined.length;
-
-  while (selected.length < 5 && selected.length < combined.length) {
-    const q = combined[idx % combined.length];
+  for (let i = 0; i < unique.length && selected.length < 5; i++) {
+    const q = unique[(seed + i) % unique.length];
     if (!selected.includes(q)) {
       selected.push(q);
     }
-    idx += 3;
   }
 
-  return selected.slice(0, 5);
+  const fallbackQuestions = [
+    "What does success look like 90 days after launch?",
+    "Who are the internal decision-makers for this project?",
+    "What risks or blockers should we plan for upfront?",
+    "What is the biggest constraint we should design around?",
+  ];
+
+  for (const q of fallbackQuestions) {
+    if (selected.length >= 4) break;
+    if (!selected.includes(q)) selected.push(q);
+  }
+
+  return selected.slice(0, Math.min(5, Math.max(4, selected.length)));
 }
 
 export class MockProvider implements AiProvider {

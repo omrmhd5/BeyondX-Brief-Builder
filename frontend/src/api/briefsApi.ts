@@ -28,16 +28,35 @@ async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
 export async function submitBrief(
   input: BriefSubmissionInput,
 ): Promise<ApiResponse<BriefCreateResponse>> {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 30000);
+
   let response: Response;
   try {
     response = await fetch(`${API_BASE}/api/briefs`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(input),
+      signal: controller.signal,
     });
-  } catch {
+  } catch (err) {
+    if (err instanceof DOMException && err.name === "AbortError") {
+      throw new NetworkError("Request timed out. Please try again.");
+    }
     throw new NetworkError();
+  } finally {
+    clearTimeout(timeout);
   }
+
+  if (
+    !response.ok &&
+    response.headers.get("content-type")?.includes("text/html")
+  ) {
+    throw new NetworkError(
+      `Server error (${response.status}). Is the backend running?`,
+    );
+  }
+
   return handleResponse<BriefCreateResponse>(response);
 }
 

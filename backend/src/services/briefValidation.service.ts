@@ -1,10 +1,5 @@
 import { z } from "zod";
-import {
-  BUDGET_RANGES,
-  SECTORS,
-  SERVICE_OPTIONS,
-  type BriefSubmissionInput,
-} from "../types/brief.js";
+import type { BriefSubmissionInput } from "../types/brief.js";
 
 const briefInputSchema = z.object({
   companyName: z
@@ -12,7 +7,11 @@ const briefInputSchema = z.object({
     .trim()
     .min(2, "Company name must be at least 2 characters")
     .max(100, "Company name must be at most 100 characters"),
-  sector: z.enum(SECTORS, { errorMap: () => ({ message: "Invalid sector" }) }),
+  sector: z
+    .string()
+    .trim()
+    .min(2, "Sector must be at least 2 characters")
+    .max(100, "Sector must be at most 100 characters"),
   objective: z
     .string()
     .trim()
@@ -24,11 +23,20 @@ const briefInputSchema = z.object({
     .min(5, "Audience must be at least 5 characters")
     .max(500, "Audience must be at most 500 characters"),
   neededServices: z
-    .array(z.enum(SERVICE_OPTIONS))
-    .min(1, "Select at least one service"),
-  budgetRange: z.enum(BUDGET_RANGES, {
-    errorMap: () => ({ message: "Invalid budget range" }),
-  }),
+    .array(
+      z
+        .string()
+        .trim()
+        .min(2, "Each service must be at least 2 characters")
+        .max(80, "Each service must be at most 80 characters"),
+    )
+    .min(1, "Select or enter at least one service")
+    .max(12, "At most 12 services allowed"),
+  budgetRange: z
+    .string()
+    .trim()
+    .min(2, "Budget must be at least 2 characters")
+    .max(100, "Budget must be at most 100 characters"),
   deadline: z
     .string()
     .refine((val) => !Number.isNaN(Date.parse(val)), "Invalid deadline date")

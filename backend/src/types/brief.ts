@@ -44,11 +44,11 @@ export type BudgetRange = (typeof BUDGET_RANGES)[number];
 
 export interface BriefSubmissionInput {
   companyName: string;
-  sector: Sector;
+  sector: string;
   objective: string;
   audience: string;
-  neededServices: ServiceOption[];
-  budgetRange: BudgetRange;
+  neededServices: string[];
+  budgetRange: string;
   deadline: string;
   aiMode: AiMode;
 }
