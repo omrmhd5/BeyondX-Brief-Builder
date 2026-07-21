@@ -73,7 +73,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
   - `GeminiProvider` — real call to Google Gemini, reads `GEMINI_API_KEY` from env, never hardcoded.
   - A **per-request UI toggle** (switch/button on the form) lets the user pick "Mock" or "Real AI" per submission. Backend honors the choice **only if** a key is configured and the call succeeds; otherwise it safely falls back to mock and communicates that in the response (no silent failures).
 - **Testing**: Vitest for both frontend and backend.
-- **Repo layout**: monorepo, `/frontend`, `/backend`, root-level `README.md`, `AI_LOG.md`, `plan.md`, `IMPLEMENTATION_PLAN.md`.
+- **Repo layout**: monorepo, `/frontend`, `/backend`, root-level `README.md`, docs in `/docs` (`AI_LOG.md`, `plan.md`, `IMPLEMENTATION_PLAN.md`).
 
 ### 3.1 Frontend Architecture — React, component-based, pages + components
 
@@ -148,11 +148,11 @@ To state explicitly in the README per assessment rules ("state assumptions clear
   - The Mock/Real AI toggle exists specifically so a reviewer without a Gemini key can still fully exercise the app deterministically.
   - Safe-fallback behavior: real AI failures never break the flow, they degrade to mock with a visible notice.
   - Layered backend architecture rationale (routes/controllers/services/models) and component-based frontend rationale (pages vs. reusable components) as evidence of production-minded structure, not just "make it work" code.
-  - AI usage disclosure lives in `AI_LOG.md`, not buried — call this out in the README.
+  - AI usage disclosure lives in `docs/AI_LOG.md`, not buried — call this out in the README.
 
 ## 5. Implementation Plan Reference
 
-Detailed, ordered build steps (mapped to the PDF's recommended time plan: scaffold → implement → test/security/perf review → docs/final run) will be written in a separate **`IMPLEMENTATION_PLAN.md`**, not duplicated here.
+Detailed, ordered build steps (mapped to the PDF's recommended time plan: scaffold → implement → test/security/perf review → docs/final run) are in [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) in this folder.
 
 ## 6. Open Items / Deferred (to be listed under "unfinished" if time runs out, and called out in README)
 

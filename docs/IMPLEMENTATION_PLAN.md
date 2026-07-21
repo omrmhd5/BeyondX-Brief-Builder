@@ -20,10 +20,10 @@ Todos:
 2. **Backend scaffold**:
    - `npm init` in `/backend`, TypeScript setup (`tsconfig.json`, `ts-node-dev` or `tsx` for dev), Express, `dotenv`.
    - Folder skeleton per `plan.md` §3.2: `src/routes`, `src/controllers`, `src/services`, `src/services/ai`, `src/models`, `src/db`, `src/middleware`, `src/types`.
-   - `src/index.ts` — Express app bootstrap, CORS config (allow frontend origin from env), JSON body parsing, mount routes, global error handler middleware, `PORT` from env (default 4000).
+   - `src/index.ts` — Express app bootstrap, CORS config (allow frontend origin from env), JSON body parsing, mount routes, global error handler middleware, `PORT` from env (default 5000).
    - `backend/.env.example`:
      ```
-     PORT=4000
+     PORT=5000
      FRONTEND_ORIGIN=http://localhost:5173
      GEMINI_API_KEY=
      ```
@@ -33,13 +33,13 @@ Todos:
    - Folder skeleton per `plan.md` §3.1: `src/pages`, `src/components`, `src/api`, `src/types`, `src/hooks`.
    - `frontend/.env.example`:
      ```
-     VITE_API_BASE_URL=http://localhost:4000
+     VITE_API_BASE_URL=http://localhost:5000
      ```
    - `frontend/package.json` scripts: `dev`, `build`, `preview`, `test`.
 4. Root-level `package.json` (optional) with convenience scripts (`dev` running both via `concurrently`), or document running both separately in README — keep simple, no need for a full workspace tool (Turborepo/NX) given the scope.
 5. Install Vitest in both `frontend` and `backend` with minimal smoke test each (`1 + 1 = 2`-style placeholder) to confirm test runner wiring works before real logic exists.
 
-**Acceptance criteria**: `cd backend && npm run dev` starts Express on port 4000 with a `GET /health` returning `{ status: "ok" }`. `cd frontend && npm run dev` starts Vite dev server showing default page with Tailwind base styles applied (e.g. a styled placeholder heading). `npm test` passes (placeholder) in both.
+**Acceptance criteria**: `cd backend && npm run dev` starts Express on port 5000 with a `GET /health` returning `{ status: "ok" }`. `cd frontend && npm run dev` starts Vite dev server showing default page with Tailwind base styles applied (e.g. a styled placeholder heading). `npm test` passes (placeholder) in both.
 
 ---
 
@@ -204,7 +204,7 @@ Todos:
 
 Todos:
 
-1. **`README.md`** (root) — sections in this order, per `plan.md` §1 and §4:
+1. **`README.md`** (repo root) — sections in this order, per `plan.md` §1 and §4:
    - Overview & how it maps to the assessment brief.
    - Setup (env vars for both apps, install, run dev, run tests, build).
    - Architecture (link/summarize `plan.md` §3, include the frontend/backend folder diagrams).
@@ -216,7 +216,7 @@ Todos:
    - Production next steps (copy from `plan.md` §6: real analytics vendor, auth/multi-tenant scoping, persistent DB, advanced rate limiting).
    - Screenshots or short demo (embed images captured during Phase 3/4).
    - Test instructions/results (how to run `npm test` in each app, paste/summarize passing output).
-2. **`AI_LOG.md`** (root) — per assessment rules ("invisible AI use is not accepted"):
+2. **`docs/AI_LOG.md`** — per assessment rules ("invisible AI use is not accepted"):
    - Which AI tool(s)/models were used.
    - Representative prompts used per phase (scaffold, backend, frontend, tests, docs).
    - What was AI-generated vs. hand-written/hand-edited.
@@ -226,7 +226,7 @@ Todos:
 4. Final pass against PDF's "Before you submit" checklist:
    - Output complete/readable/opens correctly.
    - Assumptions/sources visible, no invented data.
-   - AI tools/prompts/human changes disclosed (`AI_LOG.md`).
+   - AI tools/prompts/human changes disclosed (`docs/AI_LOG.md`).
    - Editable/source files organized and included.
    - Confirm total time spent stayed within (or note honestly if not) the 4-hour timebox — list anything left unfinished explicitly in README under "next steps" or a dedicated "unfinished due to timebox" note.
 5. Remove or clearly mark any leftover placeholder/scaffold code from Phase 0 that never got used.
@@ -243,6 +243,6 @@ Todos:
 4. Phase 3 — Build frontend: api layer/types → submission hook → components (form, toggle, loading, error, summary, questions, last-5 panel/card) → page composition → styling/a11y pass → analytics logging.
 5. Phase 4 — Write automated tests (backend validation, mock determinism, fallback, API integration; frontend at least one).
 6. Phase 5 — Security/performance review pass with recorded findings.
-7. Phase 6 — Write README.md, AI_LOG.md, capture screenshots, final submission checklist pass.
+7. Phase 6 — Write README.md, docs/AI_LOG.md, capture screenshots, final submission checklist pass.
 
 Do not reorder phases; each depends on artifacts from the previous one (e.g. Phase 3 needs Phase 2's live API; Phase 4 needs Phase 2/3 code to test; Phase 6 needs real results from Phases 4/5 to document truthfully rather than speculatively).
