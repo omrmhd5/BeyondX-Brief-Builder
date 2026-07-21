@@ -17,10 +17,11 @@ I confirm this is my work, I used no confidential material, and this AI-use log 
 ## Tools used
 
 - **Cursor IDE + Composer** (Claude-based agent) — planning, code generation, debugging, docs
+- **`skills/UI_Skill.md`** — agent skill for frontend visual design (UI polish pass)
 - **Vitest** — tests (run manually)
 - **Google Gemini API** (`gemini-3.1-flash-lite`) — optional real AI; key from env only
 
-Only the public assessment PDF, project code, and synthetic form data were used in AI tools.
+Only the public assessment PDF, project code, synthetic form data, and `skills/UI_Skill.md` were used in AI tools.
 
 ---
 
@@ -39,17 +40,19 @@ Only the public assessment PDF, project code, and synthetic form data were used 
 
 - _Planning_: "Read the assessment PDF, create PROJECT_SPEC.md"; "React + Express + SQLite, Gemini toggle, Tailwind, port 5000."
 - _Build_: "Implement full stack per IMPLEMENTATION_PLAN"; "Add view/delete submissions"; "Allow custom sector, services, budget."
+- _UI_: "Apply skills/UI_Skill.md to redesign the frontend."
 - _Debug_: "Mock stuck on loading with custom values — why?"
 
 ---
 
 ## AI-generated vs my input
 
-| AI generated                             | I directed / reviewed                                               |
-| ---------------------------------------- | ------------------------------------------------------------------- |
-| Scaffold, backend, frontend, tests, docs | Stack, architecture, port, UX decisions                             |
-| Most implementation code                 | DELETE endpoints, custom fields, confirm modal, Gemini model choice |
-| —                                        | `.env` / API keys (never committed)                                 |
+| AI generated                             | I directed / reviewed                                                 |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| Scaffold, backend, frontend, tests, docs | Stack, architecture, port, UX decisions                               |
+| Most implementation code                 | DELETE endpoints, custom fields, confirm modal, Gemini model choice   |
+| UI components, tokens, styling pass      | Reviewed layout, colors, accessibility; requested cursor/select fixes |
+| —                                        | `.env` / API keys (never committed)                                   |
 
 ---
 
@@ -65,6 +68,7 @@ Only the public assessment PDF, project code, and synthetic form data were used 
 | Gemini JSON in markdown fences                                 | `extractJson()` helper                                 |
 | `window.confirm` for delete                                    | `ConfirmDeleteModal`                                   |
 | No fetch timeout                                               | 30s `AbortController` on submit                        |
+| Plain native selects / missing pointer cursor on buttons       | `SelectField`, shared button tokens, themed scrollbars |
 
 ---
 

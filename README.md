@@ -8,6 +8,7 @@
 | [`docs/IMPLEMENTATION_PLAN.md`](docs/IMPLEMENTATION_PLAN.md) | Phased build steps + completion checklist       |
 | [`docs/AI_LOG.md`](docs/AI_LOG.md)                           | AI coding log (assessment requirement)          |
 | [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)               | Test coverage details + full run output         |
+| [`skills/UI_Skill.md`](skills/UI_Skill.md)                   | UI design skill used for frontend polish        |
 
 A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Developer** hiring assessment. Clients enter project details and receive a structured brief summary plus 4–6 discovery questions, powered by a deterministic mock AI provider with optional Google Gemini integration.
 
@@ -15,7 +16,8 @@ A full-stack prototype for the **Beyond X Full-Stack AI Developer / Web Develope
 
 This project implements the assessment brief:
 
-- Responsive, accessible form UI (React + Tailwind CSS) with **preset or custom** sector, services, and budget
+- Responsive, accessible form UI (React + Tailwind) with **preset or custom** sector, services, and budget
+- Dark zinc UI polished with [`skills/UI_Skill.md`](skills/UI_Skill.md) (glass panels, Geist, emerald accent)
 - Server-side validation and normalized API responses (Node/Express)
 - AI provider abstraction: deterministic mock (no API key) + optional **Gemini 3.1 Flash Lite** via env var
 - Last 5 submissions persisted in SQLite — **view**, **delete one**, or **delete all**
@@ -90,9 +92,11 @@ See [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md) for requirements & architectu
 
 ### Frontend (React + Vite + Tailwind)
 
-- `BriefBuilderPage` composes form, results, and past-submissions panel
+- `BriefBuilderPage` — split hero, form + submissions grid, results area
 - `useBriefSubmission` — submit state machine (idle → loading → success/error)
 - `briefFormUtils` — resolves preset + custom fields into API payload
+- `components/ui/` — `GlassCard`, `PrimaryButton`, `SelectField`; tokens in `lib/uiClasses.ts`
+- `useScrollReveal` — entry motion; skeleton loading state (no generic spinner)
 - Modals: `SubmissionDetailModal`, `ConfirmDeleteModal`
 
 ### Backend (Node/Express, layered)
@@ -123,6 +127,7 @@ Response shape: `{ success: true, data }` or `{ success: false, error: { message
 - **Manually-synced types** between frontend/backend (no shared package).
 - **Mock-first**: reviewers can test fully without a Gemini key; per-request toggle for real AI.
 - **Custom form fields**: presets for UX speed; free-text allowed because the PDF does not mandate fixed enums.
+- **UI skill-driven styling**: `skills/UI_Skill.md` guided the post-MVP visual pass; no extra animation libraries added.
 
 ## Assumptions
 

@@ -9,6 +9,7 @@
 | **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC (assessment requirement)            | Reviewers               |
 | **`README.md`** (root)            | Runbook — setup, env, architecture summary, **test instructions + summary**       | Anyone cloning the repo |
 | **`TEST_RESULTS.md`**             | What each test covers + full captured `npm test` output                           | Submission evidence     |
+| **`skills/UI_Skill.md`**          | Agent skill for frontend visual design (used in UI polish pass)                   | Build reference         |
 
 Test **instructions** and a **summary** belong in **README** (assessment requirement). Per-test details and **full terminal output** are in **`TEST_RESULTS.md`**.
 
@@ -89,6 +90,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
 ## 3. Technical Stack & Key Decisions
 
 - **Stack**: React (Vite) + TypeScript + Tailwind CSS | Node.js/Express + TypeScript | monorepo `/frontend` + `/backend`.
+- **UI**: Dark zinc theme, Geist Variable (self-hosted), emerald accent; layout/components per [`skills/UI_Skill.md`](../skills/UI_Skill.md).
 - **Backend port**: `5000` (configurable via `PORT`).
 - **Persistence**: SQLite (`better-sqlite3`), last 5 rows FIFO. Render ephemeral-disk caveat accepted for MVP.
 - **AI**:
@@ -97,7 +99,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
   - Per-request UI toggle; safe fallback to mock.
 - **Testing**: Vitest (backend + frontend).
 - **Env templates**: `backend/.env.example`, `frontend/.env.example` (committed; copy to `.env` locally).
-- **Docs**: `docs/PROJECT_SPEC.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/AI_LOG.md`, `docs/TEST_RESULTS.md`, root `README.md`.
+- **Docs**: `docs/PROJECT_SPEC.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/AI_LOG.md`, `docs/TEST_RESULTS.md`, `skills/UI_Skill.md`, root `README.md`.
 
 ### 3.1 Frontend Architecture
 
@@ -115,11 +117,15 @@ frontend/src/
       LastSubmissionCard/
     SubmissionDetailModal/    # view full past brief
     ConfirmDeleteModal/     # delete one / delete all
+    ui/                     # GlassCard, PrimaryButton, SelectField
   api/briefsApi.ts          # POST, GET, DELETE
-  hooks/useBriefSubmission.ts
+  hooks/
+    useBriefSubmission.ts
+    useScrollReveal.ts
   lib/
     analytics.ts
     briefFormUtils.ts       # resolveBriefInput, validateBriefForm
+    uiClasses.ts            # shared design tokens
   types/brief.ts
 ```
 
@@ -191,3 +197,4 @@ Beyond the PDF minimum:
 - Fetch timeout (30s) so UI does not spin forever on dead server.
 - SQLite `busy_timeout` to reduce lock hangs.
 - Mock `pickQuestions` safe algorithm (fixes infinite loop with custom inputs).
+- UI polish pass via `skills/UI_Skill.md`: glass panels, custom selects/scrollbars, skeleton loading, scroll reveal.

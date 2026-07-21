@@ -19,6 +19,7 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 | 5     | Security & performance (code/config)    | Done                           |
 | 6     | Custom form fields & `briefFormUtils`   | Done                           |
 | 7     | Submissions CRUD UI + mock/Gemini fixes | Done                           |
+| 8     | UI polish (`skills/UI_Skill.md`)        | Done                           |
 
 ---
 
@@ -351,6 +352,20 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 
 ---
 
+## Phase 8 — UI Polish (`skills/UI_Skill.md`)
+
+**Goal**: Visual pass using the project UI skill — dark zinc theme, glass panels, Geist, emerald accent.
+
+- `lib/uiClasses.ts`, `components/ui/`, `useScrollReveal`, skeleton loading, custom selects/scrollbars
+- Manual browser review; no new animation libraries
+
+### Acceptance criteria
+
+- Form accessibility unchanged (labels, errors, loading/success)
+- Layout remains responsive on mobile
+
+---
+
 ## Execution order
 
 ```
@@ -359,9 +374,11 @@ Phase 0 → 1 → 2 → 3 → 4 → 5
          Phase 6 (custom fields) — can follow Phase 3
                 ↓
          Phase 7 (CRUD UI + fixes) — depends on Phase 2 API + Phase 3 panel
+                ↓
+         Phase 8 (UI polish) — after Phase 3 frontend
 ```
 
-Do not skip Phase 1 (types) before Phase 2/3. Phase 4 needs Phases 2–3 code. Phase 6–7 are incremental on top of the MVP path.
+Do not skip Phase 1 (types) before Phase 2/3. Phase 4 needs Phases 2–3 code. Phase 6–8 are incremental on top of the MVP path.
 
 ---
 
@@ -394,7 +411,8 @@ frontend/src/
     LastSubmissionsPanel/  LastSubmissionCard/
     SubmissionDetailModal/  ConfirmDeleteModal/
   api/briefsApi.ts
-  hooks/useBriefSubmission.ts
-  lib/analytics.ts  briefFormUtils.ts
+  hooks/useBriefSubmission.ts  useScrollReveal.ts
+  lib/analytics.ts  briefFormUtils.ts  uiClasses.ts
+  components/ui/  GlassCard  PrimaryButton  SelectField
   types/brief.ts
 ```
