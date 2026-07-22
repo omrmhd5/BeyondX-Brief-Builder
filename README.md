@@ -127,6 +127,7 @@ See [`docs/PROJECT_SPEC.md`](docs/PROJECT_SPEC.md) for requirements & architectu
 - `components/ui/` — `BezelCard`, `PrimaryButton`, `SelectField`; tokens in `lib/uiClasses.ts`
 - `useScrollReveal` — entry motion; bezel skeleton loading placeholders (no spinner)
 - Modals: `SubmissionDetailModal`, `ConfirmDeleteModal`
+- Production SEO: favicon, Open Graph/Twitter meta, JSON-LD org schema, `robots.txt` / `sitemap.xml` (`frontend/public/`)
 
 ### Backend (Node/Express, layered)
 

@@ -211,3 +211,4 @@ Beyond the PDF minimum:
 - Mock `pickQuestions` safe algorithm (fixes infinite loop with custom inputs).
 - UI polish pass via `skills/UI_Skill.md`: glass panels, custom selects/scrollbars, skeleton loading, scroll reveal.
 - Live deployment (Vercel + Render) with dev/production env split and CORS.
+- Production SEO metadata: favicon, social previews, JSON-LD organization, `robots.txt` / `sitemap.xml`.
