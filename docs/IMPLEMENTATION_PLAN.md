@@ -453,4 +453,11 @@ frontend/src/
 render.yaml          # Render blueprint
 vercel.json          # Monorepo Vercel build (frontend/)
 frontend/vercel.json # SPA rewrites
+
+demo/                # Screenshots + walkthrough (see README § Screenshots & demo video)
+  01-landing-hero.png
+  02-project-brief-form.png
+  03-brief-results-discovery-questions.png
+  04-submission-detail-modal.png
+  demo-walkthrough.mp4
 ```

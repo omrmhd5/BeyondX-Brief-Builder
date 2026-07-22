@@ -2,6 +2,8 @@
 
 Captured output and per-test coverage from `npm test` in each package. Re-run before submission to refresh.
 
+UI screenshots and walkthrough video: [`demo/`](../demo/) — previews in [`README.md`](../README.md#screenshots--demo-video).
+
 **How to reproduce:**
 
 ```bash

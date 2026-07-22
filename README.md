@@ -25,6 +25,28 @@ This project implements the assessment brief:
 
 **Repository:** https://github.com/omrmhd5/BeyondX-Brief-Builder
 
+## Screenshots & demo video
+
+Assets live in [`demo/`](demo/). Full-size previews below.
+
+**Landing & intake form**
+
+![Landing hero — client intake headline and project brief form](demo/01-landing-hero.png)
+
+![Filled project brief form with past submissions panel](demo/02-project-brief-form.png)
+
+**Generated brief & submission history**
+
+![Brief summary and discovery questions after Real AI generation](demo/03-brief-results-discovery-questions.png)
+
+![Submission detail modal — view a past brief](demo/04-submission-detail-modal.png)
+
+**Walkthrough video**
+
+<video src="demo/demo-walkthrough.mp4" controls width="100%">
+  <a href="demo/demo-walkthrough.mp4">Download demo walkthrough (MP4)</a>
+</video>
+
 ## Project Docs
 
 | Document                                                     | Purpose                                         |

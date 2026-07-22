@@ -43,13 +43,14 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
 | 6   | README (setup, architecture, trade-offs, assumptions, security, perf, analytics, next steps) | Done — [`README.md`](../README.md)                                                    |
 | 7   | AI coding log                                                                                | Done — [`AI_LOG.md`](AI_LOG.md)                                                       |
 | 8   | Live deployment (demo URL)                                                                   | Done — [`README.md`](../README.md#live-demo)                                          |
+| 9   | Screenshots / short demo                                                                     | Done — [`README.md`](../README.md#screenshots--demo-video), [`demo/`](../demo/)       |
 
 ### Assessment rules to respect
 
 - Standalone — no external candidate collaboration.
 - State assumptions explicitly.
 - AI use disclosed in `docs/AI_LOG.md`.
-- Submission = repo/ZIP + README + tests + **live demo** + AI log. No hardcoded keys. Assessment PDF kept out of public repo (requirements in `PROJECT_SPEC.md`).
+- Submission = repo/ZIP + README + tests + **live demo** + screenshots/video + AI log. No hardcoded keys. Assessment PDF kept out of public repo (requirements in `PROJECT_SPEC.md`).
 
 ---
 
@@ -195,7 +196,6 @@ Phased build steps and completion notes: [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATI
 - Persistent DB (Postgres/Mongo Atlas) for Render.
 - Advanced rate limiting.
 - Shared types or OpenAPI codegen.
-- Submission screenshots in `docs/screenshots/` (candidate to add before final submit).
 
 ---
 
@@ -212,3 +212,4 @@ Beyond the PDF minimum:
 - UI polish pass via `skills/UI_Skill.md`: glass panels, custom selects/scrollbars, skeleton loading, scroll reveal.
 - Live deployment (Vercel + Render) with dev/production env split and CORS.
 - Production SEO metadata: favicon, social previews, JSON-LD organization, `robots.txt` / `sitemap.xml`.
+- Screenshots + walkthrough video in [`demo/`](../demo/) — embedded in [`README.md`](../README.md#screenshots--demo-video).

@@ -111,12 +111,13 @@ Live URLs and setup: [`README.md`](../README.md#live-demo). File checklist: [`IM
 - 4–6 discovery questions; last 5 submissions FIFO
 - Tests pass: 15 backend, 1 frontend — see [`README.md`](../README.md#test-results) and [`TEST_RESULTS.md`](TEST_RESULTS.md)
 - Production live — health, CORS, and mock submit verified (see [`TEST_RESULTS.md`](TEST_RESULTS.md#manual-verification-live))
+- UI screenshots + demo video in [`demo/`](../demo/) (previewed in [`README.md`](../README.md#screenshots--demo-video))
 
 ---
 
 ## Deferred (out of MVP scope)
 
-Analytics vendor, auth, persistent DB on Render (Postgres), screenshots, shared types package — see README.
+Analytics vendor, auth, persistent DB on Render (Postgres), shared types package — see README.
 
 ---
 
