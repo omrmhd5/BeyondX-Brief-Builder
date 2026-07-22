@@ -41,11 +41,7 @@ Assets live in [`demo/`](demo/). Full-size previews below.
 
 ![Submission detail modal — view a past brief](demo/04-submission-detail-modal.png)
 
-**Walkthrough video**
-
-<video src="demo/demo-walkthrough.mp4" controls width="100%">
-  <a href="demo/demo-walkthrough.mp4">Download demo walkthrough (MP4)</a>
-</video>
+**Walkthrough video:** [demo/demo-walkthrough.mp4](demo/demo-walkthrough.mp4)
 
 ## Project Docs
 

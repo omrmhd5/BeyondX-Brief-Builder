@@ -9,7 +9,7 @@
 | **`IMPLEMENTATION_PLAN.md`**      | How — phased build steps (Phases 0–9), file map                   | Build reference         |
 | **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC, deployment         | Reviewers               |
 | **`TEST_RESULTS.md`**             | Test coverage + full `npm test` output + live smoke checks        | Submission evidence     |
-| **`demo/`**                       | Screenshots + walkthrough video (embedded in README)              | Reviewers               |
+| **`demo/`**                       | Screenshots + walkthrough video (linked from README)              | Reviewers               |
 | **`skills/UI_Skill.md`**          | UI design skill used for frontend polish                          | Build reference         |
 
 Test **instructions** and a **summary** belong in **README** (assessment requirement). Per-test details and **full terminal output** are in **`TEST_RESULTS.md`**.
@@ -199,7 +199,7 @@ Beyond the PDF minimum:
 - UI polish pass via `skills/UI_Skill.md`: glass panels, custom selects/scrollbars, skeleton loading, scroll reveal.
 - Live deployment (Vercel + Render) with dev/production env split and CORS.
 - Production SEO metadata: favicon, social previews, JSON-LD organization, `robots.txt` / `sitemap.xml`.
-- Screenshots + walkthrough video in [`demo/`](../demo/) — embedded in [`README.md`](../README.md#screenshots--demo-video).
+- Screenshots + walkthrough video in [`demo/`](../demo/) — linked from [`README.md`](../README.md#screenshots--demo-video).
 
 ---
 
