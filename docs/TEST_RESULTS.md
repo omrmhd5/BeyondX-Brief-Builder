@@ -2,8 +2,6 @@
 
 Captured output and per-test coverage from `npm test` in each package. Re-run before submission to refresh.
 
-UI screenshots and walkthrough video: [`demo/`](../demo/) — previews in [`README.md`](../README.md#screenshots--demo-video).
-
 **How to reproduce:**
 
 ```bash
@@ -124,4 +122,6 @@ Not covered by `npm test` — run manually against production after deploy.
 | CORS        | Request from Vercel origin                              | `access-control-allow-origin` matches frontend URL |
 | End-to-end  | Mock submit on https://beyondx-brief-builder.vercel.app | Summary + questions; entry in past submissions     |
 
-Deploy workflow: [`AI_LOG.md`](AI_LOG.md#deployment). URLs: [`README.md`](../README.md#live-demo).
+Deploy workflow: [`AI_LOG.md`](AI_LOG.md#deployment-ai-assisted). URLs: [`README.md`](../README.md#live-demo).
+
+UI screenshots and walkthrough: [`demo/`](../demo/) — previews in [`README.md`](../README.md#screenshots--demo-video).

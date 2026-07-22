@@ -2,20 +2,23 @@
 
 ### Documentation split
 
-| Document                          | Purpose                                                                                 | Audience                |
-| --------------------------------- | --------------------------------------------------------------------------------------- | ----------------------- |
-| **`PROJECT_SPEC.md`** (this file) | What & why — requirements from the PDF, architecture, assumptions, feature status       | Reviewers               |
-| **`IMPLEMENTATION_PLAN.md`**      | How — phased build steps (Phases 0–9), file map, test file list                         | Build reference         |
-| **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC, deployment (assessment requirement)      | Reviewers               |
-| **`README.md`** (root)            | Runbook — setup, env, deployment, architecture summary, **test instructions + summary** | Anyone cloning the repo |
-| **`TEST_RESULTS.md`**             | What each test covers + full captured `npm test` output                                 | Submission evidence     |
-| **`skills/UI_Skill.md`**          | Agent skill for frontend visual design (used in UI polish pass)                         | Build reference         |
+| Document                          | Purpose                                                           | Audience                |
+| --------------------------------- | ----------------------------------------------------------------- | ----------------------- |
+| **`PROJECT_SPEC.md`** (this file) | What & why — requirements, architecture, assumptions, status      | Reviewers               |
+| **`README.md`** (root)            | Runbook — quick start, live demo, architecture, deployment, tests | Anyone cloning the repo |
+| **`IMPLEMENTATION_PLAN.md`**      | How — phased build steps (Phases 0–9), file map                   | Build reference         |
+| **`AI_LOG.md`**                   | AI disclosure — tools, prompts, defects, SDLC, deployment         | Reviewers               |
+| **`TEST_RESULTS.md`**             | Test coverage + full `npm test` output + live smoke checks        | Submission evidence     |
+| **`demo/`**                       | Screenshots + walkthrough video (embedded in README)              | Reviewers               |
+| **`skills/UI_Skill.md`**          | UI design skill used for frontend polish                          | Build reference         |
 
 Test **instructions** and a **summary** belong in **README** (assessment requirement). Per-test details and **full terminal output** are in **`TEST_RESULTS.md`**.
 
+**Suggested reading order:** README (demo + quick start) → this spec (requirements) → `IMPLEMENTATION_PLAN.md` (how it was built) → `AI_LOG.md` (AI disclosure) → `TEST_RESULTS.md` (evidence).
+
 Source: Beyond X hiring assessment (Mid–Senior Full-Stack AI Developer / Web Developer). Requirements are captured in this document; the confidential assessment PDF is **not** included in the public repository.
 
-**Status**: MVP complete and deployed live (Vercel + Render). Post-MVP enhancements (view/delete submissions, custom form fields, confirm modals) implemented. See [§7 Built features](#7-built-features-as-implemented).
+**Status**: MVP complete and deployed live (Vercel + Render). Post-MVP enhancements implemented. See [§5 Built features](#5-built-features-as-implemented).
 
 ---
 
@@ -101,7 +104,7 @@ Build **"Beyond X Brief Builder"**: a client enters company name, sector, object
   - Per-request UI toggle; safe fallback to mock.
 - **Testing**: Vitest (backend + frontend).
 - **Env templates**: `backend/.env.example`, `frontend/.env.example` (committed; copy to `.env` locally).
-- **Hosting**: Vercel (frontend) + Render (backend); GitHub `main` auto-deploy. Runbook in [`README.md`](../README.md#deploy); MCP workflow in [`AI_LOG.md`](AI_LOG.md#deployment).
+- **Hosting**: Vercel (frontend) + Render (backend); GitHub `main` auto-deploy. Runbook in [`README.md`](../README.md#deployment); MCP workflow in [`AI_LOG.md`](AI_LOG.md#deployment-ai-assisted).
 - **Docs**: `docs/PROJECT_SPEC.md`, `docs/IMPLEMENTATION_PLAN.md`, `docs/AI_LOG.md`, `docs/TEST_RESULTS.md`, `skills/UI_Skill.md`, root `README.md`.
 
 ### 3.1 Frontend Architecture
@@ -183,23 +186,7 @@ Free-tier Render SQLite **resets on redeploy** — acceptable for this MVP/demo;
 
 ---
 
-## 5. Implementation Plan Reference
-
-Phased build steps and completion notes: [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).
-
----
-
-## 6. Deferred / production next steps
-
-- Real analytics vendor.
-- Auth / multi-tenant scoping.
-- Persistent DB (Postgres/Mongo Atlas) for Render.
-- Advanced rate limiting.
-- Shared types or OpenAPI codegen.
-
----
-
-## 7. Built features (as implemented)
+## 5. Built features (as implemented)
 
 Beyond the PDF minimum:
 
@@ -213,3 +200,19 @@ Beyond the PDF minimum:
 - Live deployment (Vercel + Render) with dev/production env split and CORS.
 - Production SEO metadata: favicon, social previews, JSON-LD organization, `robots.txt` / `sitemap.xml`.
 - Screenshots + walkthrough video in [`demo/`](../demo/) — embedded in [`README.md`](../README.md#screenshots--demo-video).
+
+---
+
+## 6. Deferred / production next steps
+
+- Real analytics vendor.
+- Auth / multi-tenant scoping.
+- Persistent DB (Postgres/Mongo Atlas) for Render.
+- Advanced rate limiting.
+- Shared types or OpenAPI codegen.
+
+---
+
+## 7. Implementation Plan Reference
+
+Phased build steps and completion notes: [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md).

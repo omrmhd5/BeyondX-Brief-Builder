@@ -57,12 +57,27 @@ Assets live in [`demo/`](demo/). Full-size previews below.
 | [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md)               | Test coverage details + full run output         |
 | [`skills/UI_Skill.md`](skills/UI_Skill.md)                   | UI design skill used for frontend polish        |
 
-## Setup
+## Quick start
 
 ### Prerequisites
 
 - Node.js 20+
 - npm
+
+### Install & run
+
+```bash
+npm install
+cd backend && npm install && cd ..
+cd frontend && npm install && cd ..
+
+# Run both (from root)
+npm run dev
+
+# Or separately:
+cd backend && npm run dev    # http://localhost:5000
+cd frontend && npm run dev   # http://localhost:5173
+```
 
 ### Environment variables
 
@@ -97,44 +112,11 @@ VITE_API_BASE_URL=http://localhost:5000
 
 See [`backend/.env.example`](backend/.env.example) and [`frontend/.env.example`](frontend/.env.example) for committed templates (no secrets).
 
-### Development vs production URLs
-
-| Variable                       | Development (local)     | Production                                       |
-| ------------------------------ | ----------------------- | ------------------------------------------------ |
-| `FRONTEND_ORIGIN` (backend)    | `http://localhost:5173` | `https://beyondx-brief-builder.vercel.app`       |
-| `VITE_API_BASE_URL` (frontend) | `http://localhost:5000` | `https://beyondx-brief-builder-api.onrender.com` |
-
-`FRONTEND_ORIGIN` accepts comma-separated origins if you need both local and production during testing.
-
-### Deploy
-
-- **Frontend (Vercel):** [`vercel.json`](vercel.json) at repo root builds `frontend/` (`npm run build --prefix frontend` → `frontend/dist`). [`frontend/vercel.json`](frontend/vercel.json) handles SPA routing. GitHub `main` auto-deploys.
-- **Backend (Render):** [`render.yaml`](render.yaml) — service `beyondx-brief-builder-api`, `rootDir: backend`, health check `/health`, Frankfurt. GitHub `main` auto-deploys.
-- **Production env:** set `FRONTEND_ORIGIN` on Render and `VITE_API_BASE_URL` on Vercel (see table above). `GEMINI_API_KEY` on Render only if using real AI — optional.
-- **Blueprint:** [Deploy backend from GitHub](https://dashboard.render.com/blueprint/new?repo=https://github.com/omrmhd5/BeyondX-Brief-Builder) — set `FRONTEND_ORIGIN` and `GEMINI_API_KEY` when prompted.
-
-How deployment was done (including Cursor MCP): [`docs/AI_LOG.md`](docs/AI_LOG.md#deployment).
-
-### Install & run
-
-```bash
-npm install
-cd backend && npm install && cd ..
-cd frontend && npm install && cd ..
-
-# Run both (from root)
-npm run dev
-
-# Or separately:
-cd backend && npm run dev    # http://localhost:5000
-cd frontend && npm run dev   # http://localhost:5173
-```
-
 ### Run tests
 
 ```bash
 cd backend && npm test   # 15 tests
-cd frontend && npm test    # 1 test
+cd frontend && npm test  # 1 test
 ```
 
 ## Architecture
@@ -172,6 +154,22 @@ routes → controllers → services → models
 | DELETE | `/api/briefs`     | Delete all submissions   |
 
 Response shape: `{ success: true, data }` or `{ success: false, error: { message, fieldErrors? } }`.
+
+## Deployment
+
+| Variable                       | Development (local)     | Production                                       |
+| ------------------------------ | ----------------------- | ------------------------------------------------ |
+| `FRONTEND_ORIGIN` (backend)    | `http://localhost:5173` | `https://beyondx-brief-builder.vercel.app`       |
+| `VITE_API_BASE_URL` (frontend) | `http://localhost:5000` | `https://beyondx-brief-builder-api.onrender.com` |
+
+`FRONTEND_ORIGIN` accepts comma-separated origins if you need both local and production during testing.
+
+- **Frontend (Vercel):** [`vercel.json`](vercel.json) at repo root builds `frontend/`. [`frontend/vercel.json`](frontend/vercel.json) handles SPA routing. GitHub `main` auto-deploys.
+- **Backend (Render):** [`render.yaml`](render.yaml) — service `beyondx-brief-builder-api`, `rootDir: backend`, health check `/health`. GitHub `main` auto-deploys.
+- **Production env:** set `FRONTEND_ORIGIN` on Render and `VITE_API_BASE_URL` on Vercel (see table). `GEMINI_API_KEY` on Render only if using real AI — optional.
+- **Blueprint:** [Deploy backend from GitHub](https://dashboard.render.com/blueprint/new?repo=https://github.com/omrmhd5/BeyondX-Brief-Builder)
+
+How deployment was done (including Cursor MCP): [`docs/AI_LOG.md`](docs/AI_LOG.md#deployment-ai-assisted).
 
 ## Trade-offs
 
@@ -227,8 +225,6 @@ Console stand-in via `frontend/src/lib/analytics.ts`:
 
 ## Test Results
 
-**Instructions** (also in README per assessment):
-
 ```bash
 cd backend && npm test   # 15 tests
 cd frontend && npm test  # 1 test
@@ -236,7 +232,7 @@ cd frontend && npm test  # 1 test
 
 **Summary**: 5 test files, **16 tests passed** (15 backend + 1 frontend).
 
-Per-test coverage and full terminal output: [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).
+Per-test coverage, full terminal output, and live smoke checks: [`docs/TEST_RESULTS.md`](docs/TEST_RESULTS.md).
 
 ## AI Usage & SDLC
 

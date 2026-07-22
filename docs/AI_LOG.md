@@ -100,7 +100,7 @@ Deployment was part of the same Cursor session as the build. I used **Render MCP
 - Set `GEMINI_API_KEY` in Render dashboard only
 - Reviewed diffs before push; retried after Render `tsc` / Vercel monorepo build failures (see defects table)
 
-Live URLs and setup: [`README.md`](../README.md#live-demo). File checklist: [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) Phase 9. Post-deploy checks: [`TEST_RESULTS.md`](TEST_RESULTS.md#manual-verification-live).
+Live URLs: [`README.md`](../README.md#live-demo). File checklist: [`IMPLEMENTATION_PLAN.md`](IMPLEMENTATION_PLAN.md) Phase 9. Post-deploy checks: [`TEST_RESULTS.md`](TEST_RESULTS.md#manual-verification-live).
 
 ---
 

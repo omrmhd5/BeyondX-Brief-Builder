@@ -5,6 +5,8 @@ Step-by-step build plan for the project defined in [PROJECT_SPEC.md](PROJECT_SPE
 **Stack**: React (Vite) + Tailwind + TypeScript | Node/Express + TypeScript | SQLite | Vitest  
 **Backend port**: `5000`
 
+**Reading order:** [Completion status](#completion-status) → Phases 0–9 → [File map](#file-map-implemented) at the end.
+
 ---
 
 ## Completion status
